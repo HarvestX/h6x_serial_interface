@@ -12,5 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#pragma once
+
 #include "h6x_serial_interface/port_handler_base.hpp"
 #include "h6x_serial_interface/port_handler.hpp"
