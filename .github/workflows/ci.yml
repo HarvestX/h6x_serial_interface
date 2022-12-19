@@ -1,5 +1,4 @@
 name: ci
-run-name: ${{ matrix.ros_distribution }}
 
 on:
   push:
