@@ -1,4 +1,5 @@
-name: ci_${{ matrix.ros_distribution }}
+name: ci
+run-name: ${{ matrix.ros_distribution }}
 
 on:
   push:
@@ -22,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
         ros_distribution: [galactic, humble]
     steps:
       - uses: actions/checkout@v2
