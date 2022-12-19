@@ -1,4 +1,4 @@
-name: ci_galactic
+name: ci_${{ matrix.ros_distribution }}
 
 on:
   push:
