@@ -15,9 +15,16 @@ ament_auto_add_library(${MY_LIB_NAME} SHARED ${src_files})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(ament_cmake_gtest REQUIRED)
+  find_package(ament_cmake_gmock REQUIRED)
+
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
+
   ament_lint_auto_find_test_dependencies()
+
+  ament_export_dependencies(ament_cmake_gtest)
+  ament_export_dependencies(ament_cmake_gmock)
 endif()
 
 ament_auto_package()
