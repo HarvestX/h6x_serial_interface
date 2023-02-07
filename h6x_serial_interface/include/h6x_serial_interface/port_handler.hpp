@@ -32,7 +32,9 @@ namespace h6x_serial_interface
 class PortHandler final : public PortHandlerBase
 {
 public:
+  using SharedPtr = std::shared_ptr<PortHandler>;
   using UniquePtr = std::unique_ptr<PortHandler>;
+
   const int BAUDRATE;
   const std::string PORT_NAME;
 
