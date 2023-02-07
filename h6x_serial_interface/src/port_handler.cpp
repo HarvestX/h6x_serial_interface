@@ -18,9 +18,8 @@
 namespace h6x_serial_interface
 {
 PortHandler::PortHandler(
-  const std::string & port_name,
-  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_if,
-  const int baudrate)
+  const std::string port_name, const int baudrate,
+  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_if)
 : BAUDRATE(baudrate),
   PORT_NAME(port_name),
   socket_fd_(-1),

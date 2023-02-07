@@ -23,7 +23,7 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
 
   this->port_handler_ = std::make_unique<PortHandler>(
-    dev, this->get_node_logging_interface(), baudrate);
+    dev, baudrate, this->get_node_logging_interface());
 
   if (!this->port_handler_->openPort()) {
     exit(EXIT_FAILURE);
