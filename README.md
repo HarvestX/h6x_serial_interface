@@ -47,7 +47,9 @@ Here the following parameters are available.
 - `baudrate` : Baudrate
 
 ```bash
-ros2 run h6x_serial_interface_example simple_read_node_exec --ros-args -p dev:=/dev/ttyUSB0 -p baudrate:=115200
+ros2 run h6x_serial_interface_example simple_read_node_exec \
+  --ros-args \
+    -p dev:=/dev/ttyUSB0 -p baudrate:=115200
 ```
 
 #### Write packet
@@ -57,7 +59,9 @@ Here the following parameters are available.
 
 And the sample send `Hello World` as ASCII string.
 ```bash
-ros2 run h6x_serial_interface_example simple_write_node_exec --ros-args -p dev:=/dev/ttyUSB0 -p baudrate:=115200
+ros2 run h6x_serial_interface_example simple_write_node_exec \
+  --ros-args \
+    -p dev:=/dev/ttyUSB0 -p baudrate:=115200
 ```
 
 
