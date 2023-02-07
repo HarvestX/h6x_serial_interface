@@ -40,9 +40,7 @@ colcon build
 
 
 ## Run simple example
-The following
 #### Read packet from the device
-Here the following parameters are available.
 - `dev` : Path of the device
 - `baudrate` : Baudrate
 
@@ -53,11 +51,10 @@ ros2 run h6x_serial_interface_example simple_read_node_exec \
 ```
 
 #### Write packet
-Here the following parameters are available.
 - `dev` : Path of the device
 - `baudrate` : Baudrate
 
-And the sample send `Hello World` as ASCII string.
+The sample send `Hello World` as ASCII string.
 ```bash
 ros2 run h6x_serial_interface_example simple_write_node_exec \
   --ros-args \
