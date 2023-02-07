@@ -6,7 +6,8 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
-        "${workspaceFolder}/**",
+        "${workspaceFolder}/h6x_serial_interface/include/**",
+        "${workspaceFolder}/h6x_serial_interface_example/include/**",
         "/opt/ros/galactic/src/gmock_vendor/include/**",
         "/opt/ros/galactic/include/**",
         "/usr/include/**",

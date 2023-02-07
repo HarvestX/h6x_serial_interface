@@ -45,7 +45,7 @@ public:
   explicit PortHandler(
     const std::string &,
     rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr,
-    const int && = 115200);
+    const int = 115200);
 
   bool openPort();
   void closePort();

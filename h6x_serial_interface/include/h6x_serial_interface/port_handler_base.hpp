@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <unistd.h>
 #include <stddef.h>
 
 namespace h6x_serial_interface

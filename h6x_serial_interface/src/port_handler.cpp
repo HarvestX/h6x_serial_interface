@@ -20,7 +20,7 @@ namespace h6x_serial_interface
 PortHandler::PortHandler(
   const std::string & port_name,
   rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logger,
-  const int && baudrate)
+  const int baudrate)
 : BAUDRATE(baudrate),
   PORT_NAME(port_name),
   socket_fd_(-1),
@@ -56,8 +56,8 @@ bool PortHandler::setupPort(const speed_t cflag_baud)
 
   if (socket_fd_ < 0) {
     RCLCPP_ERROR(
-      this->getLogger(), "open(%s) failed: %s",
-      this->PORT_NAME.c_str(), strerror(errno));
+      this->getLogger(), "open(%s) failed: %s", this->PORT_NAME.c_str(),
+      strerror(errno));
     return false;
   }
 
