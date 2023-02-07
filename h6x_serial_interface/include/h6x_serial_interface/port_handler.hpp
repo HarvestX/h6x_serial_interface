@@ -38,13 +38,13 @@ public:
 
 private:
   int socket_fd_;
-  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_interface_;
+  const rclcpp::Logger logger_ ;
 
 public:
   PortHandler() = delete;
   explicit PortHandler(
     const std::string &,
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr,
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr = nullptr,
     const int = 115200);
 
   bool openPort();
