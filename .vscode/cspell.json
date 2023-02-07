@@ -2,9 +2,17 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "baudrate",
     "bringup",
+    "colcon",
     "distro",
+    "Geochelone",
+    "Hawksbill",
     "rclcpp",
     "rclpy",
+    "rosdep",
+    "rosdistro",
+    "ssize",
+    "strlen"
   ]
 }
