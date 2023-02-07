@@ -32,20 +32,21 @@ namespace h6x_serial_interface
 class PortHandler final : public PortHandlerBase
 {
 public:
+  using SharedPtr = std::shared_ptr<PortHandler>;
   using UniquePtr = std::unique_ptr<PortHandler>;
+
   const int BAUDRATE;
   const std::string PORT_NAME;
 
 private:
   int socket_fd_;
-  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_interface_;
+  const rclcpp::Logger logger_;
 
 public:
   PortHandler() = delete;
   explicit PortHandler(
-    const std::string &,
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr,
-    const int && = 115200);
+    const std::string, const int = 115200,
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr = nullptr);
 
   bool openPort();
   void closePort();

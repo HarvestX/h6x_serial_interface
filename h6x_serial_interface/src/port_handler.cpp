@@ -18,13 +18,12 @@
 namespace h6x_serial_interface
 {
 PortHandler::PortHandler(
-  const std::string & port_name,
-  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logger,
-  const int && baudrate)
+  const std::string port_name, const int baudrate,
+  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_if)
 : BAUDRATE(baudrate),
   PORT_NAME(port_name),
   socket_fd_(-1),
-  logging_interface_(logger)
+  logger_(logging_if == nullptr ? rclcpp::get_logger("PortHandler") : logging_if->get_logger())
 {
 }
 
@@ -56,8 +55,8 @@ bool PortHandler::setupPort(const speed_t cflag_baud)
 
   if (socket_fd_ < 0) {
     RCLCPP_ERROR(
-      this->getLogger(), "open(%s) failed: %s",
-      this->PORT_NAME.c_str(), strerror(errno));
+      this->getLogger(), "open(%s) failed: %s", this->PORT_NAME.c_str(),
+      strerror(errno));
     return false;
   }
 
@@ -158,6 +157,6 @@ speed_t PortHandler::getCFlagBaud(const int baudrate) const noexcept
 
 const rclcpp::Logger PortHandler::getLogger() const noexcept
 {
-  return this->logging_interface_->get_logger();
+  return this->logger_;
 }
 }  // namespace h6x_serial_interface
