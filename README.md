@@ -67,7 +67,7 @@ ros2 run h6x_serial_interface_example simple_write_node_exec \
 You can implement your own serial interface by using `port_handler`.
 ```cpp
 // Header
-#include <h6x_serial_interface/h6x_serial_interface.cpp>
+#include <h6x_serial_interface/h6x_serial_interface.hpp>
 
 // - Source code --------------------------------------------------------
   std::string dev = "/dev/ttyUSB0";
