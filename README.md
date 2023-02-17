@@ -72,7 +72,7 @@ You can implement your own serial interface by using `port_handler`.
 // - Source code --------------------------------------------------------
   std::string dev = "/dev/ttyUSB0";
   int baudrate = 115200;
-  const auto port_handler = std::make_unique<PortHandler>(dev, baudrate);
+  const auto port_handler = std::make_unique<h6x_serial_interface::PortHandler>(dev, baudrate);
 
   // Open port
   port_handler->openPort();
