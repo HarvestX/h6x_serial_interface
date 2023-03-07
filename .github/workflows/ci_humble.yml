@@ -33,3 +33,4 @@ jobs:
           import-token: ${{ secrets.GITHUB_TOKEN }}
           package-name: |
             h6x_serial_interface
+            h6x_serial_interface_example
