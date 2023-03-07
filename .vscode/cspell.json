@@ -5,14 +5,17 @@
     "baudrate",
     "bringup",
     "colcon",
+    "coveragepy",
     "distro",
     "Geochelone",
     "Hawksbill",
+    "osrf",
     "rclcpp",
     "rclpy",
     "rosdep",
     "rosdistro",
     "ssize",
-    "strlen"
+    "strlen",
+    "vcstool"
   ]
 }
