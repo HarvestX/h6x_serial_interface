@@ -23,6 +23,9 @@ if(BUILD_TESTING)
 
   ament_lint_auto_find_test_dependencies()
 
+  set(TARGET test_hex_handler)
+  ament_auto_add_gtest(${TARGET} test/src/${TARGET}.cpp)
+
   ament_export_dependencies(ament_cmake_gtest)
   ament_export_dependencies(ament_cmake_gmock)
 endif()
