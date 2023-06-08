@@ -19,7 +19,7 @@ using namespace h6x_serial_interface;  // NOLINT
 
 
 TEST(TestHexHandler, char2hex) {
-  uint8_t res = 0;
+  uint8_t res;
   ASSERT_TRUE(HexHandler::char2hex('1', res));
   ASSERT_EQ(res, 1);
 
@@ -31,4 +31,46 @@ TEST(TestHexHandler, char2hex) {
 
   // Invalid char
   ASSERT_FALSE(HexHandler::char2hex('G', res));
+}
+
+TEST(TestHexHandler, hex2char) {
+  char res;
+  ASSERT_TRUE(HexHandler::hex2char(1, res));
+  ASSERT_EQ(res, '1');
+
+  ASSERT_TRUE(HexHandler::hex2char(10, res));
+  ASSERT_EQ(res, 'A');
+
+  ASSERT_TRUE(HexHandler::hex2char(15, res));
+  ASSERT_EQ(res, 'F');
+
+  ASSERT_FALSE(HexHandler::hex2char(16, res));
+}
+
+TEST(TestHexHandler, bin2hex) {
+  uint8_t bin[2] = {255, 254};
+  char hex[4];
+
+  ASSERT_EQ(HexHandler::bin2hex(bin, sizeof(bin), hex, sizeof(hex)), size_t(4));
+  ASSERT_EQ(hex[0], 'F');
+  ASSERT_EQ(hex[1], 'F');
+  ASSERT_EQ(hex[2], 'F');
+  ASSERT_EQ(hex[3], 'E');
+}
+
+
+TEST(TestHexHandler, hex2bin_even) {
+  char hex[4] = {'F', 'F', 'F', 'E'};
+  uint8_t bin[2];
+  ASSERT_EQ(HexHandler::hex2bin(hex, sizeof(hex), bin, sizeof(bin)), size_t(2));
+  ASSERT_EQ(bin[0], uint8_t(255));
+  ASSERT_EQ(bin[1], uint8_t(254));
+}
+
+TEST(TestHexHandler, hex2bin_odd) {
+  char hex[3] = { /* 'F',*/ 'F', 'F', 'E'};
+  uint8_t bin[2];
+  ASSERT_EQ(HexHandler::hex2bin(hex, sizeof(hex), bin, sizeof(bin)), size_t(2));
+  ASSERT_EQ(bin[0], uint8_t(15));
+  ASSERT_EQ(bin[1], uint8_t(254));
 }

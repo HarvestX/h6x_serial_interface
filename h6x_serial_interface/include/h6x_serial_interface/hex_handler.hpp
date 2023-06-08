@@ -26,5 +26,6 @@ public:
   static bool hex2char(const uint8_t &, char &) noexcept;
 
   static size_t bin2hex(uint8_t const * const, const size_t, char * const, const size_t) noexcept;
+  static size_t hex2bin(char *, const size_t, uint8_t *, const size_t) noexcept;
 };
 }  // namespace h6x_serial_interface
