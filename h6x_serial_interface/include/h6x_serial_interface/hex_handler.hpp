@@ -1,4 +1,4 @@
-// Copyright 2022 HarvestX Inc.
+// Copyright 2023 HarvestX Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,17 @@
 
 #pragma once
 
-#include "h6x_serial_interface/port_handler_base.hpp"
-#include "h6x_serial_interface/port_handler.hpp"
-#include "h6x_serial_interface/hex_handler.hpp"
+#include <cinttypes>
+#include <cstddef>
+
+namespace h6x_serial_interface
+{
+class HexHandler
+{
+public:
+  static bool char2hex(const char &, uint8_t &) noexcept;
+  static bool hex2char(const uint8_t &, char &) noexcept;
+
+  static size_t bin2hex(uint8_t const * const, const size_t, char * const, const size_t) noexcept;
+};
+}  // namespace h6x_serial_interface

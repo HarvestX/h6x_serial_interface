@@ -1,4 +1,4 @@
-// Copyright 2022 HarvestX Inc.
+// Copyright 2023 HarvestX Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include <gtest/gtest.h>
+#include <h6x_serial_interface/hex_handler.hpp>
 
-#include "h6x_serial_interface/port_handler_base.hpp"
-#include "h6x_serial_interface/port_handler.hpp"
-#include "h6x_serial_interface/hex_handler.hpp"
+using namespace h6x_serial_interface;  // NOLINT
+
+
+TEST(TestHexHandler, char2hex) {
+  uint8_t res = 0;
+  ASSERT_TRUE(HexHandler::char2hex('1', res));
+  ASSERT_EQ(res, 1);
+
+  ASSERT_TRUE(HexHandler::char2hex('f', res));
+  ASSERT_EQ(res, 15);
+
+  ASSERT_TRUE(HexHandler::char2hex('F', res));
+  ASSERT_EQ(res, 15);
+
+  // Invalid char
+  ASSERT_FALSE(HexHandler::char2hex('G', res));
+}
