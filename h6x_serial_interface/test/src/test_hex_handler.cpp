@@ -74,3 +74,36 @@ TEST(TestHexHandler, hex2bin_odd) {
   ASSERT_EQ(bin[0], uint8_t(15));
   ASSERT_EQ(bin[1], uint8_t(254));
 }
+
+TEST(TestHexHandler, hex2int) {
+  char hex_1b[2] = {'F', 'F'};
+  int8_t i8_ret;
+  ASSERT_TRUE(HexHandler::hex2int<int8_t>(hex_1b, sizeof(hex_1b), i8_ret));
+  ASSERT_EQ(i8_ret, int8_t(-1));
+
+  uint8_t u8_ret;
+  ASSERT_TRUE(HexHandler::hex2int<uint8_t>(hex_1b, sizeof(hex_1b), u8_ret));
+  ASSERT_EQ(u8_ret, uint8_t(255));
+
+  int16_t i16_ret;
+  ASSERT_FALSE(HexHandler::hex2int<int16_t>(hex_1b, sizeof(hex_1b), i16_ret));
+
+  char hex_2b[4] = {'F', 'F', 'F', 'F'};
+  ASSERT_TRUE(HexHandler::hex2int<int16_t>(hex_2b, sizeof(hex_2b), i16_ret));
+  ASSERT_EQ(i16_ret, int16_t(-1));
+
+  uint16_t u16_ret;
+  ASSERT_TRUE(HexHandler::hex2int<uint16_t>(hex_2b, sizeof(hex_2b), u16_ret));
+  ASSERT_EQ(u16_ret, uint16_t(65535));
+
+  int32_t i32_ret;
+  ASSERT_FALSE(HexHandler::hex2int<int32_t>(hex_2b, sizeof(hex_2b), i32_ret));
+
+  char hex_4b[8] = {'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F'};
+  ASSERT_TRUE(HexHandler::hex2int<int32_t>(hex_4b, sizeof(hex_4b), i32_ret));
+  ASSERT_EQ(i32_ret, int32_t(-1));
+
+  uint32_t u32_ret;
+  ASSERT_TRUE(HexHandler::hex2int<uint32_t>(hex_4b, sizeof(hex_4b), u32_ret));
+  ASSERT_EQ(u32_ret, uint32_t(4294967295));
+}

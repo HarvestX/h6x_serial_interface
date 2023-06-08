@@ -27,5 +27,29 @@ public:
 
   static size_t bin2hex(uint8_t const * const, const size_t, char * const, const size_t) noexcept;
   static size_t hex2bin(char *, const size_t, uint8_t *, const size_t) noexcept;
+
+  template<typename T>
+  static bool hex2int(char const * const hex, const size_t hex_len, T & ret)
+  {
+    uint8_t dec;
+    if (sizeof(T) * 2 != hex_len) {
+      return false;
+    }
+    ret = 0;
+
+    for (size_t i = 0; i < hex_len - 1; ++i) {
+      if (!HexHandler::char2hex(hex[i], dec)) {
+        return false;
+      }
+      ret |= 0x0F & dec;
+      ret <<= 4;
+    }
+    if (!HexHandler::char2hex(hex[hex_len - 1], dec)) {
+      return false;
+    }
+    ret |= 0x0F & dec;
+
+    return true;
+  }
 };
 }  // namespace h6x_serial_interface
