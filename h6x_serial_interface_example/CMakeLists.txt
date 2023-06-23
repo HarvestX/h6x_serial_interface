@@ -17,6 +17,15 @@ rclcpp_components_register_node(
   PLUGIN "${PROJECT_NAME}::SimpleReadNode"
   EXECUTABLE ${TARGET}_exec)
 
+# Simple ReadUntil Node ==================================================
+set(TARGET simple_read_until_node)
+set(MY_LIB_NAME ${PROJECT_NAME}_${TARGET})
+ament_auto_add_library(${MY_LIB_NAME} SHARED src/${TARGET}.cpp)
+rclcpp_components_register_node(
+  ${MY_LIB_NAME}
+  PLUGIN "${PROJECT_NAME}::SimpleReadUntilNode"
+  EXECUTABLE ${TARGET}_exec)
+
 # Simle Write Node ==================================================
 set(TARGET simple_write_node)
 set(MY_LIB_NAME ${PROJECT_NAME}_${TARGET})
