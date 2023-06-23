@@ -29,17 +29,18 @@ public:
   RCLCPP_UNIQUE_PTR_DEFINITIONS(PortHandler)
 
 private:
-  std::string dev_;
+  const std::string dev_;
   boost::asio::io_service io_;
   std::unique_ptr<boost::asio::serial_port> port_;
 
 public:
-  bool configure(const std::string &, const int = 115200);
+  explicit PortHandler(const std::string &);
+  bool configure(const int = 115200);
   bool open();
   bool close();
 
   ssize_t read(char * const, const size_t) const override;
-  ssize_t readUntil(boost::asio::streambuf &, const char = '\r') const override;
+  ssize_t readUntil(std::string &, const char = '\r') const override;
   ssize_t write(const char * const, const size_t) const override;
 
 private:

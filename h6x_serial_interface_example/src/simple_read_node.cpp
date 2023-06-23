@@ -22,10 +22,10 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
 
-  this->port_handler_ = std::make_unique<PortHandler>();
+  this->port_handler_ = std::make_unique<PortHandler>(dev);
 
   using namespace h6x_serial_interface;  // NOLINT
-  if (!this->port_handler_->configure(dev, baudrate)) {
+  if (!this->port_handler_->configure(baudrate)) {
     exit(EXIT_FAILURE);
   }
 

@@ -16,7 +16,7 @@
 
 #include <unistd.h>
 #include <stddef.h>
-#include <boost/asio.hpp>
+#include <string>
 
 namespace h6x_serial_interface
 {
@@ -26,7 +26,7 @@ public:
   PortHandlerBase() {}
 
   virtual ssize_t read(char * const, const size_t) const = 0;
-  virtual ssize_t readUntil(boost::asio::streambuf &, const char) const = 0;
+  virtual ssize_t readUntil(std::string &, const char) const = 0;
   virtual ssize_t write(const char * const, const size_t) const = 0;
 };
 }  // namespace h6x_serial_interface

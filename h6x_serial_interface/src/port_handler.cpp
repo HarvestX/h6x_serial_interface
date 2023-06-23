@@ -17,10 +17,12 @@
 
 namespace h6x_serial_interface
 {
-bool PortHandler::configure(const std::string & dev, const int baudrate)
+PortHandler::PortHandler(const std::string & dev)
+: dev_(dev) {}
+
+bool PortHandler::configure(const int baudrate)
 {
   using namespace boost::asio;  // NOLINT
-  this->dev_ = dev;
   try {
     this->port_ = std::make_unique<serial_port>(this->io_);
     this->port_->open(this->dev_);
@@ -39,11 +41,6 @@ bool PortHandler::configure(const std::string & dev, const int baudrate)
 
 bool PortHandler::open()
 {
-  if (this->dev_.empty()) {
-    RCLCPP_ERROR(this->getLogger(), "Port handler not configured");
-    return false;
-  }
-
   try {
     if (!this->port_->is_open()) {
       this->port_->open(this->dev_);
@@ -84,7 +81,7 @@ ssize_t PortHandler::read(char * const buf, const size_t size) const
   return -1;
 }
 
-ssize_t PortHandler::readUntil(boost::asio::streambuf & buf, const char delimiter) const
+ssize_t PortHandler::readUntil(std::string & buf, const char delimiter) const
 {
   if (!this->port_->is_open()) {
     RCLCPP_ERROR(this->getLogger(), "%s: not opened", this->dev_.c_str());
@@ -92,13 +89,12 @@ ssize_t PortHandler::readUntil(boost::asio::streambuf & buf, const char delimite
   }
 
   try {
-    return boost::asio::read_until(*this->port_, buf, delimiter);
+    return boost::asio::read_until(*this->port_, boost::asio::dynamic_buffer(buf), delimiter);
   } catch (const boost::system::system_error & e) {
     RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
   }
   return -1;
 }
-
 
 ssize_t PortHandler::write(char const * const buf, const size_t size) const
 {

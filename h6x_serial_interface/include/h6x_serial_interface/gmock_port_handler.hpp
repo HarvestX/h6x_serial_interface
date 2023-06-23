@@ -33,6 +33,6 @@ public:
   }
 
   MOCK_METHOD(ssize_t, read, (char * const, const size_t), (const override));
-  MOCK_METHOD(ssize_t, readUntil, (boost::asio::streambuf &, const char = '\r'), (const override));
+  MOCK_METHOD(ssize_t, readUntil, (std::string &, const char = '\r'), (const override));
   MOCK_METHOD(ssize_t, write, (const char * const, const size_t), (const override));
 };
