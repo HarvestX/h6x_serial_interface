@@ -24,10 +24,8 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   set(TARGET test_hex_handler)
-  ament_auto_add_gtest(${TARGET} test/src/${TARGET}.cpp)
-
-  ament_export_dependencies(ament_cmake_gtest)
-  ament_export_dependencies(ament_cmake_gmock)
+  ament_add_gmock(${TARGET} test/src/${TARGET}.cpp)
+  target_link_libraries(${TARGET} ${MY_LIB_NAME})
 endif()
 
 ament_auto_package()

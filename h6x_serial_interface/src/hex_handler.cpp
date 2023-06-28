@@ -64,7 +64,7 @@ size_t HexHandler::bin2hex(
 }
 
 size_t HexHandler::hex2bin(
-  char * hex, const size_t hex_len,
+  char const * hex, const size_t hex_len,
   uint8_t * buf, const size_t buf_len) noexcept
 {
   uint8_t dec;

@@ -1,4 +1,4 @@
-// Copyright 2022 HarvestX Inc.
+// Copyright 2023 HarvestX Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,24 +14,52 @@
 
 #pragma once
 
-#include <unistd.h>
-#include <stddef.h>
-#include <string>
-#include <rclcpp/rclcpp.hpp>
-
 namespace h6x_serial_interface
 {
-class PortHandlerBase
+
+class PacketStateBase
 {
-public:
-  RCLCPP_SHARED_PTR_DEFINITIONS(PortHandlerBase)
-  RCLCPP_UNIQUE_PTR_DEFINITIONS(PortHandlerBase)
+protected:
+  enum class State
+  {
+    EMPTY,
+    OK,
+    WAITING
+  };
+
+protected:
+  State state_;
 
 public:
-  PortHandlerBase() {}
+  PacketStateBase()
+  {
+    this->state_ = State::EMPTY;
+  }
 
-  virtual ssize_t read(char * const, const size_t) const = 0;
-  virtual ssize_t readUntil(std::string &, const char) const = 0;
-  virtual ssize_t write(const char * const, const size_t) const = 0;
+  inline bool isOK()
+  {
+    return this->state_ == State::OK;
+  }
+
+  inline void consumed()
+  {
+    this->state_ = State::EMPTY;
+  }
+
+protected:
+  inline void makeOK()
+  {
+    this->state_ = State::OK;
+  }
+
+  inline void makeWaiting()
+  {
+    this->state_ = State::WAITING;
+  }
+
+  inline bool isWaiting()
+  {
+    return this->state_ == State::WAITING;
+  }
 };
 }  // namespace h6x_serial_interface

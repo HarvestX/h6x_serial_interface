@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <h6x_serial_interface/hex_handler.hpp>
 
 using namespace h6x_serial_interface;  // NOLINT
@@ -106,4 +106,33 @@ TEST(TestHexHandler, hex2int) {
   uint32_t u32_ret;
   ASSERT_TRUE(HexHandler::hex2int<uint32_t>(hex_4b, sizeof(hex_4b), u32_ret));
   ASSERT_EQ(u32_ret, uint32_t(4294967295));
+}
+
+TEST(TestHexHandler, int2hex) {
+  int8_t in_i8 = -2;
+  char hex_1b[2];
+  ASSERT_TRUE(HexHandler::int2hex<int8_t>(in_i8, hex_1b, sizeof(hex_1b)));
+  ASSERT_THAT(hex_1b, ::testing::ElementsAre('F', 'E'));
+
+  uint8_t in_u8 = 254;
+  ASSERT_TRUE(HexHandler::int2hex<uint8_t>(in_u8, hex_1b, sizeof(hex_1b)));
+  ASSERT_THAT(hex_1b, ::testing::ElementsAre('F', 'E'));
+
+  int16_t in_i16 = -2;
+  char hex_2b[4];
+  ASSERT_TRUE(HexHandler::int2hex<int16_t>(in_i16, hex_2b, sizeof(hex_2b)));
+  ASSERT_THAT(hex_2b, ::testing::ElementsAre('F', 'F', 'F', 'E'));
+
+  uint16_t in_u16 = 65534;
+  ASSERT_TRUE(HexHandler::int2hex<uint16_t>(in_u16, hex_2b, sizeof(hex_2b)));
+  ASSERT_THAT(hex_2b, ::testing::ElementsAre('F', 'F', 'F', 'E'));
+
+  int32_t in_i32 = -2;
+  char hex_4b[8];
+  ASSERT_TRUE(HexHandler::int2hex<int32_t>(in_i32, hex_4b, sizeof(hex_4b)));
+  ASSERT_THAT(hex_4b, ::testing::ElementsAre('F', 'F', 'F', 'F', 'F', 'F', 'F', 'E'));
+
+  uint32_t in_u32 = 4294967294;
+  ASSERT_TRUE(HexHandler::int2hex<uint32_t>(in_u32, hex_4b, sizeof(hex_4b)));
+  ASSERT_THAT(hex_4b, ::testing::ElementsAre('F', 'F', 'F', 'F', 'F', 'F', 'F', 'E'));
 }
