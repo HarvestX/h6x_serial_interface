@@ -8,6 +8,7 @@
       "includePath": [
         "${workspaceFolder}/h6x_serial_interface/include/**",
         "${workspaceFolder}/h6x_serial_interface_example/include/**",
+        "${workspaceFolder}/h6x_packet_handler/include/**",
         "/opt/ros/humble/src/gmock_vendor/include/**",
         "/opt/ros/humble/include/**",
         "/usr/include/**",

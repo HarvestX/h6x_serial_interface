@@ -40,14 +40,17 @@ SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
 
 SimpleReadUntilNode::~SimpleReadUntilNode()
 {
-  using namespace h6x_serial_interface;  // NOLINT
   this->port_handler_->close();
+  this->port_handler_.reset();
 }
 
 void SimpleReadUntilNode::onReadTimer()
 {
-  std::string buf;
+  std::stringstream buf;
   this->port_handler_->readUntil(buf, '\r');
-  RCLCPP_INFO(this->get_logger(), "Read(%lu): %s", buf.size(), buf.data());
+  RCLCPP_INFO(this->get_logger(), "Read: %s", buf.str().c_str());
 }
 }  // namespace h6x_serial_interface_example
+
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleReadUntilNode)

@@ -14,25 +14,51 @@
 
 #pragma once
 
-#include <h6x_serial_interface/h6x_serial_interface.hpp>
-#include <rclcpp/rclcpp.hpp>
+namespace h6x_packet_handler
+{
+class PacketStateBase
+{
+protected:
+  enum class State
+  {
+    EMPTY,
+    OK,
+    WAITING
+  };
 
-namespace h6x_serial_interface_example
-{
-class SimpleWriteNode : public rclcpp::Node
-{
 private:
-  using PortHandler = h6x_serial_interface::PortHandler;
-
-  PortHandler::UniquePtr port_handler_;
-  rclcpp::TimerBase::SharedPtr write_timer_;
+  State state_;
 
 public:
-  SimpleWriteNode() = delete;
-  explicit SimpleWriteNode(const rclcpp::NodeOptions &);
-  ~SimpleWriteNode();
+  PacketStateBase()
+  {
+    this->state_ = State::EMPTY;
+  }
 
-private:
-  void onWritTimer();
+  inline bool isOK()
+  {
+    return this->state_ == State::OK;
+  }
+
+  inline void consume()
+  {
+    this->state_ = State::EMPTY;
+  }
+
+protected:
+  inline void makeOK()
+  {
+    this->state_ = State::OK;
+  }
+
+  inline void makeWaiting()
+  {
+    this->state_ = State::WAITING;
+  }
+
+  inline bool isWaiting()
+  {
+    return this->state_ == State::WAITING;
+  }
 };
-}  // namespace h6x_serial_interface_example
+}  // namespace h6x_packet_handler

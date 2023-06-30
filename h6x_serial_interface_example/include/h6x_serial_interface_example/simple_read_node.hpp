@@ -36,6 +36,3 @@ private:
   void onReadTimer();
 };
 }  // namespace h6x_serial_interface_example
-
-#include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleReadNode)

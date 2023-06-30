@@ -14,52 +14,18 @@
 
 #pragma once
 
-namespace h6x_serial_interface
+#include <string>
+
+#include "h6x_packet_handler/packet_state_base.hpp"
+
+namespace h6x_packet_handler
 {
-
-class PacketStateBase
+class RxPacketBase : public PacketStateBase
 {
-protected:
-  enum class State
-  {
-    EMPTY,
-    OK,
-    WAITING
-  };
-
-protected:
-  State state_;
-
 public:
-  PacketStateBase()
-  {
-    this->state_ = State::EMPTY;
-  }
+  RxPacketBase()
+  : PacketStateBase() {}
 
-  inline bool isOK()
-  {
-    return this->state_ == State::OK;
-  }
-
-  inline void consumed()
-  {
-    this->state_ = State::EMPTY;
-  }
-
-protected:
-  inline void makeOK()
-  {
-    this->state_ = State::OK;
-  }
-
-  inline void makeWaiting()
-  {
-    this->state_ = State::WAITING;
-  }
-
-  inline bool isWaiting()
-  {
-    return this->state_ == State::WAITING;
-  }
+  virtual bool set(const std::string &) noexcept = 0;
 };
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler

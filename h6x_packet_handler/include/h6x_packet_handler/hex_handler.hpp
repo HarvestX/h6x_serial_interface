@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <cassert>
 
-namespace h6x_serial_interface
+namespace h6x_packet_handler
 {
 class HexHandler
 {
@@ -71,4 +71,4 @@ public:
     return true;
   }
 };
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler

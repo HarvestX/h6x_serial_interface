@@ -40,8 +40,8 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
 
 SimpleReadNode::~SimpleReadNode()
 {
-  using namespace h6x_serial_interface;  // NOLINT
   this->port_handler_->close();
+  this->port_handler_.reset();
 }
 
 void SimpleReadNode::onReadTimer()
@@ -51,3 +51,6 @@ void SimpleReadNode::onReadTimer()
   RCLCPP_INFO(this->get_logger(), "Read: %s", buf);
 }
 }  // namespace h6x_serial_interface_example
+
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleReadNode)

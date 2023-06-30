@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #include <gmock/gmock.h>
-#include <h6x_serial_interface/hex_handler.hpp>
+#include <h6x_packet_handler/hex_handler.hpp>
 
-using namespace h6x_serial_interface;  // NOLINT
+using namespace h6x_packet_handler;  // NOLINT
 
 
 TEST(TestHexHandler, char2hex) {

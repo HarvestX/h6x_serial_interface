@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(h6x_serial_interface)
+project(h6x_packet_handler)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -17,6 +17,10 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  set(TARGET test_hex_handler)
+  ament_add_gmock(${TARGET} test/src/${TARGET}.cpp)
+  target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARIES})
 endif()
 
 ament_auto_package()

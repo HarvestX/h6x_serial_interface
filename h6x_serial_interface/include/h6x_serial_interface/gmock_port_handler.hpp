@@ -24,6 +24,10 @@ ACTION_P(StrCpyToArg0, str) {
   strcpy(arg0, str);  // NOLINT
 }
 
+ACTION_P(StreamCpyToArg0, str) {
+  arg0 << str;
+}
+
 class MockPortHandler : public PortHandlerBase
 {
 public:
@@ -33,6 +37,6 @@ public:
   }
 
   MOCK_METHOD(ssize_t, read, (char * const, const std::size_t), (const override));
-  MOCK_METHOD(ssize_t, readUntil, (std::string &, const char), (const override));
+  MOCK_METHOD(ssize_t, readUntil, (std::stringstream &, const char), (const override));
   MOCK_METHOD(ssize_t, write, (const char * const, const size_t), (const override));
 };

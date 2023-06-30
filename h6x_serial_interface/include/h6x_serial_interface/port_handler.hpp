@@ -40,7 +40,7 @@ public:
   bool close();
 
   ssize_t read(char * const, const size_t) const override;
-  ssize_t readUntil(std::string &, const char = '\r') const override;
+  ssize_t readUntil(std::stringstream &, const char = '\r') const override;
   ssize_t write(const char * const, const size_t) const override;
 
 private:

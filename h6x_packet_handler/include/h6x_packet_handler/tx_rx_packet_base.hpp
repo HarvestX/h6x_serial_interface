@@ -19,10 +19,10 @@
 #include <string>
 #include <utility>
 
-#include <h6x_serial_interface/rx_packet.hpp>
-#include <h6x_serial_interface/tx_packet.hpp>
+#include "h6x_packet_handler/rx_packet_base.hpp"
+#include "h6x_packet_handler/tx_packet_base.hpp"
 
-namespace h6x_serial_interface
+namespace h6x_packet_handler
 {
 
 template<class TxPacketBase, class RxPacketBase>
@@ -71,11 +71,5 @@ public:
   }
 
   virtual bool isResponseOK() = 0;
-
-protected:
-  void makeWaiting()
-  {
-    this->state_ = State::WAITING;
-  }
 };
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler

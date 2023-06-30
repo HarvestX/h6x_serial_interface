@@ -40,8 +40,8 @@ SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
 
 SimpleWriteNode::~SimpleWriteNode()
 {
-  using namespace h6x_serial_interface;  // NOLINT
   this->port_handler_->close();
+  this->port_handler_.reset();
 }
 
 void SimpleWriteNode::onWritTimer()
@@ -51,3 +51,6 @@ void SimpleWriteNode::onWritTimer()
   RCLCPP_INFO(this->get_logger(), "Send: %s", buf);
 }
 }  // namespace h6x_serial_interface_example
+
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleWriteNode)

@@ -19,20 +19,12 @@
 #include <string>
 #include <utility>
 
-#include <h6x_serial_interface/hex_handler.hpp>
-#include <h6x_serial_interface/packet_state_base.hpp>
+#include <h6x_packet_handler/hex_handler.hpp>
+#include <h6x_packet_handler/packet_state_base.hpp>
 #include <rclcpp/rclcpp.hpp>
 
-namespace h6x_serial_interface
+namespace h6x_packet_handler
 {
-class RxPacketBase : public PacketStateBase
-{
-public:
-  RxPacketBase()
-  : PacketStateBase() {}
-
-  virtual bool set(const std::string &) noexcept = 0;
-};
 
 template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class RxPacket : public PacketStateBase
@@ -40,7 +32,7 @@ class RxPacket : public PacketStateBase
 protected:
   static const size_t ASCII_STX_SIZE = ASCII_STX_LEN;
   static const size_t ASCII_DATA_SIZE = ASCII_DATA_LEN;
-  static const size_t ASCII_ETX_SIZE = ASCII_ETX_LEN;  // crc + CR
+  static const size_t ASCII_ETX_SIZE = ASCII_ETX_LEN;  // crc
 
   static const size_t ASCII_BUF_SIZE = ASCII_STX_SIZE + ASCII_DATA_SIZE + ASCII_ETX_SIZE;
 
@@ -66,12 +58,12 @@ protected:
     if (buf.size() != ASCII_BUF_SIZE) {
       return false;
     }
-    if (strncmp(&buf[0], this->STX_ID.data(), ASCII_STX_SIZE) != 0) {
+    if (std::strncmp(&buf[0], this->STX_ID.data(), ASCII_STX_SIZE) != 0) {
       return false;
     }
 
     bool crc_res = false;
-    switch (this->ASCII_ETX_SIZE - sizeof('\r')) {
+    switch (this->ASCII_ETX_SIZE) {
       case 0:
         crc_res = true;  // CRC Packet not contained
         break;
@@ -115,8 +107,8 @@ protected:
     assert(idx + sizeof(T) <= this->bin_data.size());
 
     T ret = 0;
-    ret |= (this->bin_data[idx] & 0x00FF) << 8;
-    ret |= (this->bin_data[idx + 1] & 0x00FF);
+    ret |= (this->bin_data[idx + 0] & 0xFF) << 8;
+    ret |= (this->bin_data[idx + 1] & 0xFF) << 0;
     return ret;
   }
 
@@ -127,10 +119,10 @@ protected:
     assert(idx + sizeof(T) <= this->bin_data.size());
 
     T ret = 0;
-    ret |= (this->bin_data[idx + 0] & 0x000000FF) << 24;
-    ret |= (this->bin_data[idx + 1] & 0x000000FF) << 16;
-    ret |= (this->bin_data[idx + 2] & 0x000000FF) << 8;
-    ret |= (this->bin_data[idx + 3] & 0x000000FF);
+    ret |= (this->bin_data[idx + 0] & 0xFF) << 24;
+    ret |= (this->bin_data[idx + 1] & 0xFF) << 16;
+    ret |= (this->bin_data[idx + 2] & 0xFF) << 8;
+    ret |= (this->bin_data[idx + 3] & 0xFF) << 0;
 
     return ret;
   }
@@ -150,7 +142,7 @@ protected:
     ret |= (this->bin_data[idx + 4] & 0xFF) << 24;
     ret |= (this->bin_data[idx + 5] & 0xFF) << 16;
     ret |= (this->bin_data[idx + 6] & 0xFF) << 8;
-    ret |= (this->bin_data[idx + 7] & 0xFF);
+    ret |= (this->bin_data[idx + 7] & 0xFF) << 0;
   }
 };
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler

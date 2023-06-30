@@ -81,7 +81,7 @@ ssize_t PortHandler::read(char * const buf, const size_t size) const
   return -1;
 }
 
-ssize_t PortHandler::readUntil(std::string & buf, const char delimiter) const
+ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter) const
 {
   if (!this->port_->is_open()) {
     RCLCPP_ERROR(this->getLogger(), "%s: not opened", this->dev_.c_str());
@@ -89,7 +89,11 @@ ssize_t PortHandler::readUntil(std::string & buf, const char delimiter) const
   }
 
   try {
-    return boost::asio::read_until(*this->port_, boost::asio::dynamic_buffer(buf), delimiter);
+    std::string tmp;
+    const auto ret = boost::asio::read_until(
+      *this->port_, boost::asio::dynamic_buffer(tmp), delimiter);
+    buf << tmp;
+    return ret;
   } catch (const boost::system::system_error & e) {
     RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
   }

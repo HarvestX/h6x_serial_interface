@@ -20,27 +20,18 @@
 #include <string>
 #include <utility>
 
-#include <h6x_serial_interface/hex_handler.hpp>
-#include <h6x_serial_interface/packet_state_base.hpp>
-#include <h6x_serial_interface/port_handler_base.hpp>
+#include "h6x_packet_handler/hex_handler.hpp"
+#include "h6x_packet_handler/tx_packet_base.hpp"
 
-namespace h6x_serial_interface
+namespace h6x_packet_handler
 {
-class TxPacketBase : public PacketStateBase
-{
-public:
-  TxPacketBase()
-  : PacketStateBase() {}
-  virtual bool get(std::string &) noexcept = 0;
-};
-
 template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class TxPacket : public TxPacketBase
 {
 protected:
   static const size_t ASCII_STX_SIZE = ASCII_STX_LEN;
   static const size_t ASCII_DATA_SIZE = ASCII_DATA_LEN;
-  static const size_t ASCII_ETX_SIZE = ASCII_ETX_LEN;  // crc + CR
+  static const size_t ASCII_ETX_SIZE = ASCII_ETX_LEN;
 
   static const size_t ASCII_BUF_SIZE = ASCII_STX_SIZE + ASCII_DATA_SIZE + ASCII_ETX_SIZE;
 
@@ -58,7 +49,7 @@ public:
     this->ascii_buf.at(ASCII_BUF_SIZE - 1) = '\r';
   }
 
-  bool get(std::string & ret) noexcept override
+  bool get(std::string & ret, const char cap = '\r') noexcept override
   {
     if (!this->isOK()) {
       return false;
@@ -68,7 +59,7 @@ public:
       this->bin_data.data(), this->bin_data.size(),
       &this->ascii_buf[ASCII_STX_SIZE], ASCII_DATA_SIZE);
 
-    switch (this->ASCII_ETX_SIZE - sizeof('\r')) {
+    switch (this->ASCII_ETX_SIZE) {
       case 0:
         // DO NOTHING
         break;
@@ -79,8 +70,8 @@ public:
         break;
     }
 
-    this->consumed();
-    ret = std::string(this->ascii_buf.data(), this->ascii_buf.size());
+    this->consume();
+    ret = std::string(this->ascii_buf.data(), this->ascii_buf.size()) + cap;
     return true;
   }
 
@@ -93,5 +84,27 @@ protected:
 
     HexHandler::int2hex<uint8_t>(calc_crc, &buf[ASCII_BUF_SIZE - ASCII_ETX_SIZE], 2);
   }
+
+  template<typename T>
+  inline void set2ByteData(const size_t && idx, const T & val)
+  {
+    static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
+    assert(idx + sizeof(T) <= this->bin_data.size());
+
+    this->bin_data[idx + 0] = (val >> 8) & 0xFF;
+    this->bin_data[idx + 1] = (val >> 0) & 0xFF;
+  }
+
+  template<typename T>
+  inline void set4ByteData(const size_t && idx, const T & val)
+  {
+    static_assert(sizeof(T) == 4, "Sizeof T should be 4-byte");
+    assert(idx + sizeof(T) <= this->bin_data.size());
+
+    this->bin_data[idx + 0] = (val >> 24) & 0xFF;
+    this->bin_data[idx + 1] = (val >> 16) & 0xFF;
+    this->bin_data[idx + 2] = (val >> 8) & 0xFF;
+    this->bin_data[idx + 3] = (val >> 0) & 0xFF;
+  }
 };
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler
