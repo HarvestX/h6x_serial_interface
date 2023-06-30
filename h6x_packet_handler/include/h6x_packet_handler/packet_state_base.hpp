@@ -22,8 +22,7 @@ protected:
   enum class State
   {
     EMPTY,
-    OK,
-    WAITING
+    OK
   };
 
 private:
@@ -40,6 +39,11 @@ public:
     return this->state_ == State::OK;
   }
 
+  inline bool isEmpty()
+  {
+    return this->state_ == State::EMPTY;
+  }
+
   inline void consume()
   {
     this->state_ = State::EMPTY;
@@ -48,17 +52,18 @@ public:
 protected:
   inline void makeOK()
   {
+    if (this->state_ == State::OK) {
+      return;
+    }
     this->state_ = State::OK;
   }
 
-  inline void makeWaiting()
+  inline void makeEmpty()
   {
-    this->state_ = State::WAITING;
-  }
-
-  inline bool isWaiting()
-  {
-    return this->state_ == State::WAITING;
+    if (this->state_ == State::EMPTY) {
+      return;
+    }
+    this->state_ = State::EMPTY;
   }
 };
 }  // namespace h6x_packet_handler

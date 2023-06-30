@@ -29,13 +29,14 @@ namespace h6x_packet_handler
 template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class RxPacket : public PacketStateBase
 {
-protected:
+public:
   static const size_t ASCII_STX_SIZE = ASCII_STX_LEN;
   static const size_t ASCII_DATA_SIZE = ASCII_DATA_LEN;
   static const size_t ASCII_ETX_SIZE = ASCII_ETX_LEN;  // crc
 
   static const size_t ASCII_BUF_SIZE = ASCII_STX_SIZE + ASCII_DATA_SIZE + ASCII_ETX_SIZE;
 
+protected:
   std::array<uint8_t, ASCII_DATA_SIZE / 2> bin_data;
   const std::array<char, ASCII_STX_SIZE> STX_ID;
 

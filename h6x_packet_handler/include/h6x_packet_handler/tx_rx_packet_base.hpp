@@ -40,7 +40,7 @@ public:
 
   bool isWaitingResponse()
   {
-    return this->isWaiting();
+    return this->isEmpty();
   }
 
   bool getTx(std::string & ret)
@@ -52,7 +52,7 @@ public:
 
     const bool res = this->tx_packet.get(ret);
     if (res) {
-      this->makeWaiting();
+      this->makeEmpty();
     }
 
     return res;
@@ -66,6 +66,7 @@ public:
       return false;
     }
 
+    this->rx_packet.consume();
     this->makeOK();
     return this->isResponseOK();
   }
