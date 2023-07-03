@@ -14,25 +14,18 @@
 
 #pragma once
 
-#include <h6x_serial_interface/h6x_serial_interface.hpp>
-#include <rclcpp/rclcpp.hpp>
+#include <string>
 
-namespace h6x_serial_interface_example
+#include "h6x_packet_handler/packet_state_base.hpp"
+
+namespace h6x_packet_handler
 {
-class SimpleWriteNode : public rclcpp::Node
+class RxPacketBase : public PacketStateBase
 {
-private:
-  using PortHandler = h6x_serial_interface::PortHandler;
-
-  PortHandler::UniquePtr port_handler_;
-  rclcpp::TimerBase::SharedPtr write_timer_;
-
 public:
-  SimpleWriteNode() = delete;
-  explicit SimpleWriteNode(const rclcpp::NodeOptions &);
-  ~SimpleWriteNode();
+  RxPacketBase()
+  : PacketStateBase() {}
 
-private:
-  void onWritTimer();
+  virtual bool set(const std::string &) noexcept = 0;
 };
-}  // namespace h6x_serial_interface_example
+}  // namespace h6x_packet_handler

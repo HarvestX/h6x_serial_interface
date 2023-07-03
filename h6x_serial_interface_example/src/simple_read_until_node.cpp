@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "h6x_serial_interface_example/simple_read_node.hpp"
+#include "h6x_serial_interface_example/simple_read_until_node.hpp"
 
 namespace h6x_serial_interface_example
 {
-SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("simple_read_node", options)
+SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
+: rclcpp::Node("simple_read_until_node", options)
 {
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
@@ -35,22 +35,22 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
 
   using namespace std::chrono_literals;  // NOLINT
   this->read_timer_ = this->create_wall_timer(
-    500ms, std::bind(&SimpleReadNode::onReadTimer, this));
+    20ms, std::bind(&SimpleReadUntilNode::onReadTimer, this));
 }
 
-SimpleReadNode::~SimpleReadNode()
+SimpleReadUntilNode::~SimpleReadUntilNode()
 {
   this->port_handler_->close();
   this->port_handler_.reset();
 }
 
-void SimpleReadNode::onReadTimer()
+void SimpleReadUntilNode::onReadTimer()
 {
-  char buf[128];
-  this->port_handler_->read(buf, sizeof(buf));
-  RCLCPP_INFO(this->get_logger(), "Read: %s", buf);
+  std::stringstream buf;
+  this->port_handler_->readUntil(buf, '\r');
+  RCLCPP_INFO(this->get_logger(), "Read: %s", buf.str().c_str());
 }
 }  // namespace h6x_serial_interface_example
 
 #include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleReadNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleReadUntilNode)

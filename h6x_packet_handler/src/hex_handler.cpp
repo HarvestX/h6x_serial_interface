@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "h6x_serial_interface/hex_handler.hpp"
+#include "h6x_packet_handler/hex_handler.hpp"
 
-namespace h6x_serial_interface
+namespace h6x_packet_handler
 {
 bool HexHandler::char2hex(const char & c_in, uint8_t & i8_out) noexcept
 {
@@ -64,7 +64,7 @@ size_t HexHandler::bin2hex(
 }
 
 size_t HexHandler::hex2bin(
-  char * hex, const size_t hex_len,
+  char const * hex, const size_t hex_len,
   uint8_t * buf, const size_t buf_len) noexcept
 {
   uint8_t dec;
@@ -99,4 +99,4 @@ size_t HexHandler::hex2bin(
 
   return hex_len / 2 + hex_len % 2;
 }
-}  // namespace h6x_serial_interface
+}  // namespace h6x_packet_handler

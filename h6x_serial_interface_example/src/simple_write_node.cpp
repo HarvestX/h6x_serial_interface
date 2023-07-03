@@ -22,10 +22,14 @@ SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
 
-  this->port_handler_ = std::make_unique<PortHandler>(
-    dev, baudrate, this->get_node_logging_interface());
+  this->port_handler_ = std::make_unique<PortHandler>(dev);
 
-  if (!this->port_handler_->openPort()) {
+  using namespace h6x_serial_interface;  // NOLINT
+  if (!this->port_handler_->configure(baudrate)) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (!this->port_handler_->open()) {
     exit(EXIT_FAILURE);
   }
 
@@ -36,13 +40,17 @@ SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
 
 SimpleWriteNode::~SimpleWriteNode()
 {
-  this->port_handler_->closePort();
+  this->port_handler_->close();
+  this->port_handler_.reset();
 }
 
 void SimpleWriteNode::onWritTimer()
 {
   char buf[] = "Hello World";
-  this->port_handler_->writePort(buf, strlen(buf));
+  this->port_handler_->write(buf, strlen(buf));
   RCLCPP_INFO(this->get_logger(), "Send: %s", buf);
 }
 }  // namespace h6x_serial_interface_example
+
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE(h6x_serial_interface_example::SimpleWriteNode)

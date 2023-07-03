@@ -19,4 +19,8 @@
   "editor.formatOnSave": true,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
+  "files.associations": {
+    "/usr/include/c++/**": "cpp",
+    "*.ipp": "cpp"
+  },
 }

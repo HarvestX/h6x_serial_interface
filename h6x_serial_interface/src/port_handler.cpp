@@ -17,146 +17,106 @@
 
 namespace h6x_serial_interface
 {
-PortHandler::PortHandler(
-  const std::string port_name, const int baudrate,
-  rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr logging_if)
-: BAUDRATE(baudrate),
-  PORT_NAME(port_name),
-  socket_fd_(-1),
-  logger_(logging_if == nullptr ? rclcpp::get_logger("PortHandler") : logging_if->get_logger())
+PortHandler::PortHandler(const std::string & dev)
+: dev_(dev) {}
+
+bool PortHandler::configure(const int baudrate)
 {
-}
-
-bool PortHandler::openPort()
-{
-  const speed_t cflag_baud = this->getCFlagBaud(this->BAUDRATE);
-  this->closePort();
-  if (cflag_baud <= 0) {
-    RCLCPP_ERROR(this->getLogger(), "Failed to set baudrate: %d", this->BAUDRATE);
-    return false;
-  }
-
-  return this->setupPort(cflag_baud);
-}
-
-void PortHandler::closePort()
-{
-  if (this->socket_fd_ != -1) {
-    close(this->socket_fd_);
-  }
-  this->socket_fd_ = -1;
-}
-
-bool PortHandler::setupPort(const speed_t cflag_baud)
-{
-  struct termios new_tio;
-  this->socket_fd_ =
-    open(this->PORT_NAME.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-
-  if (socket_fd_ < 0) {
-    RCLCPP_ERROR(
-      this->getLogger(), "open(%s) failed: %s", this->PORT_NAME.c_str(),
-      strerror(errno));
-    return false;
-  }
-
-  // Clear struct for new port settings
-  bzero(&new_tio, sizeof(new_tio));
-
-  new_tio.c_cflag = cflag_baud | CS8 | CLOCAL | CREAD;
-  new_tio.c_iflag = IGNPAR;
-  new_tio.c_oflag = 0;
-  new_tio.c_lflag = 0;
-  new_tio.c_cc[VTIME] = 0;
-  new_tio.c_cc[VMIN] = 0;
-
-  // Clean buffer and activate settings
-  if (tcflush(this->socket_fd_, TCIFLUSH) == -1) {
-    RCLCPP_ERROR(this->getLogger(), "tcflush() failed: %s", strerror(errno));
-    return false;
-  }
-  if (tcsetattr(this->socket_fd_, TCSANOW, &new_tio) == -1) {
-    RCLCPP_ERROR(this->getLogger(), "tcsetattr() failed: %s", strerror(errno));
+  using namespace boost::asio;  // NOLINT
+  try {
+    this->port_ = std::make_unique<serial_port>(this->io_);
+    this->port_->open(this->dev_);
+    this->port_->set_option(serial_port_base::baud_rate(baudrate));
+    this->port_->set_option(serial_port_base::character_size(8));
+    this->port_->set_option(serial_port_base::parity(serial_port_base::parity::none));
+    this->port_->set_option(serial_port_base::stop_bits(serial_port_base::stop_bits::one));
+    this->port_->set_option(serial_port_base::flow_control(serial_port_base::flow_control::none));
+    this->port_->close();
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
     return false;
   }
   return true;
 }
 
-ssize_t PortHandler::getBytesAvailable() const
+bool PortHandler::open()
 {
-  int bytes_available;
-  const int result = ioctl(this->socket_fd_, FIONREAD, &bytes_available);
-  if (result == -1) {
-    RCLCPP_ERROR(this->getLogger(), "ioctl() failed %s", strerror(errno));
+  try {
+    if (!this->port_->is_open()) {
+      this->port_->open(this->dev_);
+    }
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
+    return false;
+  }
+  return true;
+}
+
+bool PortHandler::close()
+{
+  try {
+    if (this->port_->is_open()) {
+      this->port_->cancel();
+      this->port_->close();
+    }
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
+    return false;
+  }
+  return true;
+}
+
+ssize_t PortHandler::read(char * const buf, const size_t size) const
+{
+  if (!this->port_->is_open()) {
+    RCLCPP_ERROR(this->getLogger(), "%s: not opened", this->dev_.c_str());
     return -1;
   }
-  return static_cast<ssize_t>(bytes_available);
-}
 
-ssize_t PortHandler::readPort(char * packet, const size_t length) const
-{
-  const ssize_t ret = read(this->socket_fd_, packet, length);
-  if (ret == -1) {
-    RCLCPP_ERROR(this->getLogger(), "read() failed: %s", strerror(errno));
+  try {
+    return this->port_->read_some(boost::asio::buffer(buf, size));
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
   }
-  return ret;
+  return -1;
 }
 
-ssize_t PortHandler::writePort(const char * packet, const size_t length) const
+ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter) const
 {
-  const ssize_t ret = write(this->socket_fd_, packet, length);
-  if (ret == -1) {
-    RCLCPP_ERROR(this->getLogger(), "write failed: %s", strerror(errno));
+  if (!this->port_->is_open()) {
+    RCLCPP_ERROR(this->getLogger(), "%s: not opened", this->dev_.c_str());
+    return -1;
   }
-  return ret;
-}
 
-speed_t PortHandler::getCFlagBaud(const int baudrate) const noexcept
-{
-  switch (baudrate) {
-    case 9600:
-      return B9600;
-    case 19200:
-      return B19200;
-    case 38400:
-      return B38400;
-    case 57600:
-      return B57600;
-    case 115200:
-      return B115200;
-    case 230400:
-      return B230400;
-    case 460800:
-      return B460800;
-    case 500000:
-      return B500000;
-    case 576000:
-      return B576000;
-    case 921600:
-      return B921600;
-    case 1000000:
-      return B1000000;
-    case 1152000:
-      return B1152000;
-    case 1500000:
-      return B1500000;
-    case 2000000:
-      return B2000000;
-    case 2500000:
-      return B2500000;
-    case 3000000:
-      return B3000000;
-    case 3500000:
-      return B3500000;
-    case 4000000:
-      return B4000000;
-    default:
-      return -1;
+  try {
+    std::string tmp;
+    const auto ret = boost::asio::read_until(
+      *this->port_, boost::asio::dynamic_buffer(tmp), delimiter);
+    buf << tmp;
+    return ret;
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
   }
+  return -1;
 }
 
-const rclcpp::Logger PortHandler::getLogger() const noexcept
+ssize_t PortHandler::write(char const * const buf, const size_t size) const
 {
-  return this->logger_;
+  if (!this->port_->is_open()) {
+    RCLCPP_ERROR(this->getLogger(), "%s: not opened", this->dev_.c_str());
+    return -1;
+  }
+
+  try {
+    return this->port_->write_some(boost::asio::buffer(buf, size));
+  } catch (const boost::system::system_error & e) {
+    RCLCPP_ERROR(this->getLogger(), "%s %s", this->dev_.c_str(), e.what());
+  }
+  return -1;
+}
+
+const rclcpp::Logger PortHandler::getLogger() noexcept
+{
+  return rclcpp::get_logger("PortHandler");
 }
 }  // namespace h6x_serial_interface

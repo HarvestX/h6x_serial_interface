@@ -14,14 +14,18 @@
 
 #pragma once
 
+#include <string>
 #include <gmock/gmock.h>
 #include "h6x_serial_interface/port_handler_base.hpp"
 
 using PortHandlerBase = h6x_serial_interface::PortHandlerBase;
 
-
 ACTION_P(StrCpyToArg0, str) {
   strcpy(arg0, str);  // NOLINT
+}
+
+ACTION_P(StreamCpyToArg0, str) {
+  arg0 << str;
 }
 
 class MockPortHandler : public PortHandlerBase
@@ -32,7 +36,7 @@ public:
   {
   }
 
-  MOCK_METHOD(ssize_t, getBytesAvailable, (), (const override));
-  MOCK_METHOD(ssize_t, readPort, (char * const, const size_t), (const override));
-  MOCK_METHOD(ssize_t, writePort, (const char * const, const size_t), (const override));
+  MOCK_METHOD(ssize_t, read, (char * const, const std::size_t), (const override));
+  MOCK_METHOD(ssize_t, readUntil, (std::stringstream &, const char), (const override));
+  MOCK_METHOD(ssize_t, write, (const char * const, const size_t), (const override));
 };
