@@ -36,21 +36,21 @@ public:
   static const size_t ASCII_BUF_SIZE = ASCII_STX_SIZE + ASCII_DATA_SIZE + ASCII_ETX_SIZE;
 
 protected:
-  std::array<uint8_t, ASCII_DATA_SIZE / 2> bin_data;
+  std::array<uint8_t, ASCII_DATA_SIZE / 2 + ASCII_DATA_SIZE % 2> bin_data;
   std::array<char, ASCII_BUF_SIZE> ascii_buf;
+  const std::string CAP_;
 
 public:
   TxPacket() = delete;
-  explicit TxPacket(const std::array<char, ASCII_STX_SIZE> & id)
-  : TxPacketBase()
+  explicit TxPacket(const std::array<char, ASCII_STX_SIZE> & id, const std::string cap = "\r")
+  : TxPacketBase(), CAP_(cap)
   {
     this->bin_data.fill(0);
     this->ascii_buf.fill('\0');
     std::copy(id.begin(), id.end(), this->ascii_buf.begin());
-    this->ascii_buf.at(ASCII_BUF_SIZE - 1) = '\r';
   }
 
-  bool get(std::string & ret, const char cap = '\r') noexcept override
+  bool get(std::string & ret) noexcept override
   {
     if (!this->isOK()) {
       return false;
@@ -72,7 +72,7 @@ public:
     }
 
     this->consume();
-    ret = std::string(this->ascii_buf.data(), this->ascii_buf.size()) + cap;
+    ret = std::string(this->ascii_buf.data(), this->ascii_buf.size()) + this->CAP_;
     return true;
   }
 

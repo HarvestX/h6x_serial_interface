@@ -37,7 +37,7 @@ public:
   static const size_t ASCII_BUF_SIZE = ASCII_STX_SIZE + ASCII_DATA_SIZE + ASCII_ETX_SIZE;
 
 protected:
-  std::array<uint8_t, ASCII_DATA_SIZE / 2> bin_data;
+  std::array<uint8_t, ASCII_DATA_SIZE / 2 + ASCII_DATA_SIZE % 2> bin_data;
   const std::array<char, ASCII_STX_SIZE> STX_ID;
 
 public:
@@ -54,15 +54,24 @@ public:
   }
 
 protected:
-  bool setBase(const std::string & buf)
+  bool setBase(const std::string & buf)  noexcept
   {
-    if (buf.size() != ASCII_BUF_SIZE) {
+    if (buf.size() != ASCII_BUF_SIZE || !this->checkPrefix(buf) ||
+      !this->checkCRC(buf) || !this->convert(buf))
+    {
       return false;
     }
-    if (std::strncmp(&buf[0], this->STX_ID.data(), ASCII_STX_SIZE) != 0) {
-      return false;
-    }
+    this->makeOK();
+    return true;
+  }
 
+  inline bool checkPrefix(const std::string & buf) const noexcept
+  {
+    return std::strncmp(&buf[0], this->STX_ID.data(), ASCII_STX_SIZE) == 0;
+  }
+
+  virtual inline bool checkCRC(const std::string & buf) const noexcept
+  {
     bool crc_res = false;
     switch (this->ASCII_ETX_SIZE) {
       case 0:
@@ -74,15 +83,13 @@ protected:
       default:
         break;
     }
-    if (!crc_res) {
-      return false;
-    }
+    return crc_res;
+  }
 
+  virtual bool convert(const std::string & buf) noexcept
+  {
     HexHandler::hex2bin(
       &buf[ASCII_STX_SIZE], this->ASCII_DATA_SIZE, this->bin_data.data(), this->bin_data.size());
-
-    this->makeOK();
-
     return true;
   }
 
