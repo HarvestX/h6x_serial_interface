@@ -87,6 +87,15 @@ protected:
   }
 
   template<typename T>
+  inline void set1ByteData(const size_t && idx, const T & val)
+  {
+    static_assert(sizeof(T) == 1, "Sizeof T should be 1-byte");
+    assert(idx + sizeof(T) <= this->bin_data.size());
+
+    this->bin_data[idx + 0] = (val >> 0) & 0xFF;
+  }
+
+  template<typename T>
   inline void set2ByteData(const size_t && idx, const T & val)
   {
     static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
