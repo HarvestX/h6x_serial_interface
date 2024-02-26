@@ -20,6 +20,7 @@
 #include <string>
 #include <utility>
 
+#include "h6x_packet_handler/crc_handler.hpp"
 #include "h6x_packet_handler/hex_handler.hpp"
 #include "h6x_packet_handler/tx_packet_base.hpp"
 
@@ -79,9 +80,11 @@ public:
 protected:
   inline static void setCrc8(std::array<char, ASCII_BUF_SIZE> & buf) noexcept
   {
-    const uint8_t calc_crc = std::accumulate(
-      buf.data(), std::prev(buf.end(), ASCII_ETX_SIZE), 0,
-      [](uint8_t acc, const char & c) {return acc ^= static_cast<uint8_t>(c);});
+    // const uint8_t calc_crc = std::accumulate(
+    //   buf.data(), std::prev(buf.end(), ASCII_ETX_SIZE), 0,
+    //   [](uint8_t acc, const char & c) {return acc ^= static_cast<uint8_t>(c);});
+    const uint8_t calc_crc =
+      CrcHandler::crc8_ccitt(0, buf.data(), ASCII_STX_SIZE + ASCII_DATA_SIZE);
 
     HexHandler::int2hex<uint8_t>(calc_crc, &buf[ASCII_BUF_SIZE - ASCII_ETX_SIZE], 2);
   }
