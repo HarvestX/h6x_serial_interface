@@ -102,9 +102,6 @@ protected:
       return false;
     }
 
-    // const uint8_t calc_crc = std::accumulate(
-    //   buf.begin(), std::prev(buf.end(), ASCII_ETX_SIZE), 0,
-    //   [](uint8_t acc, const char & c) {return acc ^= static_cast<uint8_t>(c);});
     const uint8_t calc_crc =
       CrcHandler::crc8_ccitt(0, buf.data(), ASCII_STX_SIZE + ASCII_DATA_SIZE);
 
