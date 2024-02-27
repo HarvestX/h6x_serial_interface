@@ -17,8 +17,6 @@
   "uncrustify.configPath.linux": ".vscode/uncrustify.cfg",
   "xml.format.splitAttributes": true,
   "editor.formatOnSave": true,
-  "python.linting.enabled": true,
-  "python.linting.flake8Enabled": true,
   "files.associations": {
     "/usr/include/c++/**": "cpp",
     "*.ipp": "cpp"
