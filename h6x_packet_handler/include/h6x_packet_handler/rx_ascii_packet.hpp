@@ -109,6 +109,17 @@ protected:
   }
 
   template<typename T>
+  inline T get1byteData(const size_t && idx)
+  {
+    static_assert(sizeof(T) == 1, "Sizeof T should be 1-byte");
+    assert(idx + sizeof(T) <= this->bin_data.size());
+
+    T ret = 0;
+    ret |= (this->bin_data[idx + 0] & 0xFF) << 0;
+    return ret;
+  }
+
+  template<typename T>
   inline T get2byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
