@@ -21,6 +21,10 @@ if(BUILD_TESTING)
   set(TARGET test_hex_handler)
   ament_add_gmock(${TARGET} test/src/${TARGET}.cpp)
   target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARIES})
+
+  set(TARGET test_crc_handler)
+  ament_add_gmock(${TARGET} test/src/${TARGET}.cpp)
+  target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARIES})
 endif()
 
 ament_auto_package()
