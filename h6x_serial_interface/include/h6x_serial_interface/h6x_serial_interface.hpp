@@ -14,5 +14,5 @@
 
 #pragma once
 
-#include "h6x_serial_interface/port_handler_base.hpp"
 #include "h6x_serial_interface/port_handler.hpp"
+#include "h6x_serial_interface/port_handler_base.hpp"

@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include <cassert>
 #include <cinttypes>
 #include <cstddef>
-#include <cassert>
 
 namespace h6x_packet_handler
 {
@@ -29,7 +29,7 @@ public:
   static size_t bin2hex(uint8_t const * const, const size_t, char * const, const size_t) noexcept;
   static size_t hex2bin(char const *, const size_t, uint8_t *, const size_t) noexcept;
 
-  template<typename T>
+  template <typename T>
   static bool hex2int(char const * const hex, const size_t hex_len, T & ret)
   {
     uint8_t dec;
@@ -53,7 +53,7 @@ public:
     return true;
   }
 
-  template<typename T>
+  template <typename T>
   static bool int2hex(const T & in, char * const hex, const size_t hex_len)
   {
     uint8_t dec;

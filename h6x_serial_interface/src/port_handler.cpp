@@ -14,11 +14,9 @@
 
 #include "h6x_serial_interface/port_handler.hpp"
 
-
 namespace h6x_serial_interface
 {
-PortHandler::PortHandler(const std::string & dev)
-: dev_(dev) {}
+PortHandler::PortHandler(const std::string & dev) : dev_(dev) {}
 
 bool PortHandler::configure(const int baudrate)
 {
@@ -90,8 +88,8 @@ ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter) co
 
   try {
     std::string tmp;
-    const auto ret = boost::asio::read_until(
-      *this->port_, boost::asio::dynamic_buffer(tmp), delimiter);
+    const auto ret =
+      boost::asio::read_until(*this->port_, boost::asio::dynamic_buffer(tmp), delimiter);
     buf << tmp;
     return ret;
   } catch (const boost::system::system_error & e) {
@@ -115,8 +113,5 @@ ssize_t PortHandler::write(char const * const buf, const size_t size) const
   return -1;
 }
 
-const rclcpp::Logger PortHandler::getLogger() noexcept
-{
-  return rclcpp::get_logger("PortHandler");
-}
+const rclcpp::Logger PortHandler::getLogger() noexcept { return rclcpp::get_logger("PortHandler"); }
 }  // namespace h6x_serial_interface

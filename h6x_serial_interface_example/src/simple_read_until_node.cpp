@@ -34,8 +34,8 @@ SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
   }
 
   using namespace std::chrono_literals;  // NOLINT
-  this->read_timer_ = this->create_wall_timer(
-    20ms, std::bind(&SimpleReadUntilNode::onReadTimer, this));
+  this->read_timer_ =
+    this->create_wall_timer(20ms, std::bind(&SimpleReadUntilNode::onReadTimer, this));
 }
 
 SimpleReadUntilNode::~SimpleReadUntilNode()

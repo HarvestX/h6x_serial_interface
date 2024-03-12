@@ -7,14 +7,12 @@
   ],
   "[cpp]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "zachflower.uncrustify"
   },
   "[xml]": {
     "editor.tabSize": 2,
     "files.trimFinalNewlines": true,
     "editor.defaultFormatter": "redhat.vscode-xml",
   },
-  "uncrustify.configPath.linux": ".vscode/uncrustify.cfg",
   "xml.format.splitAttributes": true,
   "editor.formatOnSave": true,
   "files.associations": {

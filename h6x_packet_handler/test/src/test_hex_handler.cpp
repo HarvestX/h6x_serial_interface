@@ -13,12 +13,13 @@
 // limitations under the License.
 
 #include <gmock/gmock.h>
+
 #include <h6x_packet_handler/hex_handler.hpp>
 
 using namespace h6x_packet_handler;  // NOLINT
 
-
-TEST(TestHexHandler, char2hex) {
+TEST(TestHexHandler, char2hex)
+{
   uint8_t res;
   ASSERT_TRUE(HexHandler::char2hex('1', res));
   ASSERT_EQ(res, 1);
@@ -33,7 +34,8 @@ TEST(TestHexHandler, char2hex) {
   ASSERT_FALSE(HexHandler::char2hex('G', res));
 }
 
-TEST(TestHexHandler, hex2char) {
+TEST(TestHexHandler, hex2char)
+{
   char res;
   ASSERT_TRUE(HexHandler::hex2char(1, res));
   ASSERT_EQ(res, '1');
@@ -47,7 +49,8 @@ TEST(TestHexHandler, hex2char) {
   ASSERT_FALSE(HexHandler::hex2char(16, res));
 }
 
-TEST(TestHexHandler, bin2hex) {
+TEST(TestHexHandler, bin2hex)
+{
   uint8_t bin[2] = {255, 254};
   char hex[4];
 
@@ -58,8 +61,8 @@ TEST(TestHexHandler, bin2hex) {
   ASSERT_EQ(hex[3], 'E');
 }
 
-
-TEST(TestHexHandler, hex2bin_even) {
+TEST(TestHexHandler, hex2bin_even)
+{
   char hex[4] = {'F', 'F', 'F', 'E'};
   uint8_t bin[2];
   ASSERT_EQ(HexHandler::hex2bin(hex, sizeof(hex), bin, sizeof(bin)), size_t(2));
@@ -67,15 +70,17 @@ TEST(TestHexHandler, hex2bin_even) {
   ASSERT_EQ(bin[1], uint8_t(254));
 }
 
-TEST(TestHexHandler, hex2bin_odd) {
-  char hex[3] = { /* 'F',*/ 'F', 'F', 'E'};
+TEST(TestHexHandler, hex2bin_odd)
+{
+  char hex[3] = {/* 'F',*/ 'F', 'F', 'E'};
   uint8_t bin[2];
   ASSERT_EQ(HexHandler::hex2bin(hex, sizeof(hex), bin, sizeof(bin)), size_t(2));
   ASSERT_EQ(bin[0], uint8_t(15));
   ASSERT_EQ(bin[1], uint8_t(254));
 }
 
-TEST(TestHexHandler, hex2int) {
+TEST(TestHexHandler, hex2int)
+{
   char hex_1b[2] = {'F', 'F'};
   int8_t i8_ret;
   ASSERT_TRUE(HexHandler::hex2int<int8_t>(hex_1b, sizeof(hex_1b), i8_ret));
@@ -108,7 +113,8 @@ TEST(TestHexHandler, hex2int) {
   ASSERT_EQ(u32_ret, uint32_t(4294967295));
 }
 
-TEST(TestHexHandler, int2hex) {
+TEST(TestHexHandler, int2hex)
+{
   int8_t in_i8 = -2;
   char hex_1b[2];
   ASSERT_TRUE(HexHandler::int2hex<int8_t>(in_i8, hex_1b, sizeof(hex_1b)));

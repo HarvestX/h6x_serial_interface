@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include <array>
 #include <cinttypes>
 #include <cstddef>
-#include <array>
 
 namespace h6x_packet_handler
 {

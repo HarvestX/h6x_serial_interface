@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <rclcpp/rclcpp.hpp>
 #include <h6x_serial_interface/h6x_serial_interface.hpp>
+#include <rclcpp/rclcpp.hpp>
 
 namespace h6x_serial_interface_example
 {

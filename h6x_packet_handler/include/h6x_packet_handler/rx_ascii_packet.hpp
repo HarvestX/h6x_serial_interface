@@ -15,19 +15,19 @@
 #pragma once
 
 #include <array>
+#include <h6x_packet_handler/hex_handler.hpp>
+#include <h6x_packet_handler/packet_state_base.hpp>
 #include <numeric>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <utility>
 
 #include "h6x_packet_handler/crc_handler.hpp"
-#include <h6x_packet_handler/hex_handler.hpp>
-#include <h6x_packet_handler/packet_state_base.hpp>
-#include <rclcpp/rclcpp.hpp>
 
 namespace h6x_packet_handler
 {
 
-template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
+template <std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class RxPacket : public PacketStateBase
 {
 public:
@@ -43,23 +43,19 @@ protected:
 
 public:
   RxPacket() = delete;
-  explicit RxPacket(const std::array<char, ASCII_STX_SIZE> & id)
-  : STX_ID(id)
+  explicit RxPacket(const std::array<char, ASCII_STX_SIZE> & id) : STX_ID(id)
   {
     this->bin_data.fill(0);
   }
 
-  virtual bool set(const std::string & buf) noexcept
-  {
-    return this->setBase(buf);
-  }
+  virtual bool set(const std::string & buf) noexcept { return this->setBase(buf); }
 
 protected:
-  bool setBase(const std::string & buf)  noexcept
+  bool setBase(const std::string & buf) noexcept
   {
-    if (buf.size() != ASCII_BUF_SIZE || !this->checkPrefix(buf) ||
-      !this->checkCRC(buf) || !this->convert(buf))
-    {
+    if (
+      buf.size() != ASCII_BUF_SIZE || !this->checkPrefix(buf) || !this->checkCRC(buf) ||
+      !this->convert(buf)) {
       return false;
     }
     this->makeOK();
@@ -108,7 +104,7 @@ protected:
     return calc_crc == crc;
   }
 
-  template<typename T>
+  template <typename T>
   inline T get1byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 1, "Sizeof T should be 1-byte");
@@ -119,7 +115,7 @@ protected:
     return ret;
   }
 
-  template<typename T>
+  template <typename T>
   inline T get2byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
@@ -131,7 +127,7 @@ protected:
     return ret;
   }
 
-  template<typename T>
+  template <typename T>
   inline T get4byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 4, "Sizeof T should be 4-byte");
@@ -146,7 +142,7 @@ protected:
     return ret;
   }
 
-  template<typename T>
+  template <typename T>
   inline T get8byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 8, "Sizeof T should by 8-byte");

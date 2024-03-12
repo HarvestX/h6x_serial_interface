@@ -44,8 +44,7 @@ bool HexHandler::hex2char(const uint8_t & i8_in, char & c_out) noexcept
 }
 
 size_t HexHandler::bin2hex(
-  uint8_t const * const buf, const size_t buf_len,
-  char * const hex, const size_t hex_len) noexcept
+  uint8_t const * const buf, const size_t buf_len, char * const hex, const size_t hex_len) noexcept
 {
   if (hex_len < buf_len * 2) {
     return 0;
@@ -64,8 +63,7 @@ size_t HexHandler::bin2hex(
 }
 
 size_t HexHandler::hex2bin(
-  char const * hex, const size_t hex_len,
-  uint8_t * buf, const size_t buf_len) noexcept
+  char const * hex, const size_t hex_len, uint8_t * buf, const size_t buf_len) noexcept
 {
   uint8_t dec;
 

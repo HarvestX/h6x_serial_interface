@@ -23,8 +23,7 @@ namespace h6x_packet_handler
 class RxPacketBase : public PacketStateBase
 {
 public:
-  RxPacketBase()
-  : PacketStateBase() {}
+  RxPacketBase() : PacketStateBase() {}
 
   virtual bool set(const std::string &) noexcept = 0;
 };

@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <unistd.h>
 #include <stddef.h>
-#include <string>
+#include <unistd.h>
+
 #include <rclcpp/rclcpp.hpp>
+#include <string>
 
 namespace h6x_serial_interface
 {

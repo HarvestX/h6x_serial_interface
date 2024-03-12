@@ -34,8 +34,8 @@ SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
   }
 
   using namespace std::chrono_literals;  // NOLINT
-  this->write_timer_ = this->create_wall_timer(
-    500ms, std::bind(&SimpleWriteNode::onWritTimer, this));
+  this->write_timer_ =
+    this->create_wall_timer(500ms, std::bind(&SimpleWriteNode::onWritTimer, this));
 }
 
 SimpleWriteNode::~SimpleWriteNode()
