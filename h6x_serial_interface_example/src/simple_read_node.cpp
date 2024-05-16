@@ -22,14 +22,12 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
 
-  this->port_handler_ = std::make_unique<PortHandler>(dev);
-
   using namespace h6x_serial_interface;  // NOLINT
-  if (!this->port_handler_->configure(baudrate)) {
+  if (!this->serial_socket_.configure(baudrate)) {
     exit(EXIT_FAILURE);
   }
 
-  if (!this->port_handler_->open()) {
+  if (!this->serial_socket_.open(dev)) {
     exit(EXIT_FAILURE);
   }
 
@@ -37,16 +35,12 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
   this->read_timer_ = this->create_wall_timer(500ms, std::bind(&SimpleReadNode::onReadTimer, this));
 }
 
-SimpleReadNode::~SimpleReadNode()
-{
-  this->port_handler_->close();
-  this->port_handler_.reset();
-}
+SimpleReadNode::~SimpleReadNode() { this->serial_socket_.close(); }
 
 void SimpleReadNode::onReadTimer()
 {
   char buf[128];
-  this->port_handler_->read(buf, sizeof(buf));
+  this->serial_socket_.read(buf, sizeof(buf));
   RCLCPP_INFO(this->get_logger(), "Read: %s", buf);
 }
 }  // namespace h6x_serial_interface_example

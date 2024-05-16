@@ -22,9 +22,9 @@ namespace h6x_serial_interface_example
 class SimpleReadNode : public rclcpp::Node
 {
 private:
-  using PortHandler = h6x_serial_interface::PortHandler;
+  using SerialSocket = h6x_serial_interface::SerialSocket;
 
-  PortHandler::UniquePtr port_handler_;
+  SerialSocket serial_socket_;
   rclcpp::TimerBase::SharedPtr read_timer_;
 
 public:
