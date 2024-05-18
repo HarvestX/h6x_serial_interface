@@ -1,3 +1,6 @@
+# Copyright (c) 2024 HarvestX Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 cmake_minimum_required(VERSION 3.8)
 project(h6x_serial_interface_example)
 
@@ -12,7 +15,6 @@ ament_auto_find_build_dependencies()
 set(TARGET simple_read_node)
 set(MY_LIB_NAME ${PROJECT_NAME}_${TARGET})
 ament_auto_add_library(${MY_LIB_NAME} SHARED src/${TARGET}.cpp)
-target_link_libraries(${MY_LIB_NAME} serial)
 rclcpp_components_register_node(
   ${MY_LIB_NAME}
   PLUGIN "${PROJECT_NAME}::SimpleReadNode"
