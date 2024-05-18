@@ -21,18 +21,20 @@ SimpleReadNode::SimpleReadNode(const rclcpp::NodeOptions & options)
 {
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
+  this->timeout_ms_ = this->declare_parameter<int>("timeout_ms", 100);
 
   using namespace h6x_serial_interface;  // NOLINT
-  if (!this->serial_socket_.configure(baudrate)) {
-    exit(EXIT_FAILURE);
-  }
 
-  if (!this->serial_socket_.open(dev)) {
+  RCLCPP_INFO(
+    this->get_logger(), "%s: baudrate [%d] timeout [%03d]", dev.c_str(), baudrate,
+    this->timeout_ms_);
+
+  if (!this->serial_socket_.open(dev, baudrate)) {
     exit(EXIT_FAILURE);
   }
 
   using namespace std::chrono_literals;  // NOLINT
-  this->read_timer_ = this->create_wall_timer(500ms, std::bind(&SimpleReadNode::onReadTimer, this));
+  // this->read_timer_ = this->create_wall_timer(500ms, std::bind(&SimpleReadNode::onReadTimer, this));
 }
 
 SimpleReadNode::~SimpleReadNode() { this->serial_socket_.close(); }

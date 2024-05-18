@@ -23,6 +23,7 @@ class SimpleReadNode : public rclcpp::Node
 {
 private:
   using SerialSocket = h6x_serial_interface::SerialSocket;
+  int timeout_ms_;
 
   SerialSocket serial_socket_;
   rclcpp::TimerBase::SharedPtr read_timer_;
