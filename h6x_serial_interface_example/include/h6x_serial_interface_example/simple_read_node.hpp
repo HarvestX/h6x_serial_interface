@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_SERIAL_INTERFACE_EXAMPLE_SIMPLE_READ_NODE_HPP__
+#define ____H6X_SERIAL_INTERFACE_EXAMPLE_SIMPLE_READ_NODE_HPP__
 
 #include <h6x_serial_interface/h6x_serial_interface.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -27,3 +28,4 @@ private:
   void onReadTimer();
 };
 }  // namespace h6x_serial_interface_example
+#endif

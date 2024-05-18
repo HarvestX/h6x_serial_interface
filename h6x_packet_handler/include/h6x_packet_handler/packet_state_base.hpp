@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_PACKET_STATE_BASE_HPP__
+#define ____H6X_PACKET_HANDLER_PACKET_STATE_BASE_HPP__
 
 namespace h6x_packet_handler
 {
@@ -43,3 +44,4 @@ protected:
   }
 };
 }  // namespace h6x_packet_handler
+#endif

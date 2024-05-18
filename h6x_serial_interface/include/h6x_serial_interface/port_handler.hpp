@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_SERIAL_INTERFACE_PORT_HANDLER_HPP__
+#define ____H6X_SERIAL_INTERFACE_PORT_HANDLER_HPP__
 
 #include <libserial/SerialPort.h>
 
@@ -43,3 +44,4 @@ private:
   static const rclcpp::Logger getLogger(void) noexcept;
 };
 }  // namespace h6x_serial_interface
+#endif

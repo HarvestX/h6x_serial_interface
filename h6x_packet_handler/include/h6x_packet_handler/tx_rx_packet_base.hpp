@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_TX_RX_PACKET_BASE_HPP__
+#define ____H6X_PACKET_HANDLER_TX_RX_PACKET_BASE_HPP__
 
 #include <array>
 #include <numeric>
@@ -60,3 +61,4 @@ public:
   virtual bool isResponseOK() = 0;
 };
 }  // namespace h6x_packet_handler
+#endif

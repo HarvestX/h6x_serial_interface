@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_RX_PACKET_BASE_HPP__
+#define ____H6X_PACKET_HANDLER_RX_PACKET_BASE_HPP__
 
 #include <string>
 
@@ -20,3 +21,4 @@ public:
   virtual bool set(const std::string &) noexcept = 0;
 };
 }  // namespace h6x_packet_handler
+#endif

@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_SERIAL_INTERFACE_GMOCK_PORT_HANDLER_HPP__
+#define ____H6X_SERIAL_INTERFACE_GMOCK_PORT_HANDLER_HPP__
 
 #include <gmock/gmock.h>
 
@@ -30,3 +31,4 @@ public:
   MOCK_METHOD(ssize_t, readUntil, (std::stringstream &, const char), (override));
   MOCK_METHOD(ssize_t, write, (const char * const, const size_t), (override));
 };
+#endif

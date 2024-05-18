@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_TX_ASCII_PACKET_HPP__
+#define ____H6X_PACKET_HANDLER_TX_ASCII_PACKET_HPP__
 
 #include <algorithm>
 #include <array>
@@ -110,3 +111,4 @@ protected:
   }
 };
 }  // namespace h6x_packet_handler
+#endif
