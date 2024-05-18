@@ -14,22 +14,28 @@
 
 #include "h6x_serial_interface_example/simple_read_until_node.hpp"
 
+#include <h6x_serial_interface/libserial_helper.hpp>
+
 namespace h6x_serial_interface_example
 {
 SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("simple_read_until_node", options)
+: rclcpp::Node("simple_read_until_node", options),
+  timeout_ms_(this->declare_parameter<int>("timeout_ms", 100))
 {
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
   const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
 
-  this->port_handler_ = std::make_unique<PortHandler>(dev);
-
-  using namespace h6x_serial_interface;  // NOLINT
-  if (!this->port_handler_->configure(baudrate)) {
+  try {
+    this->serial_port_.Open(dev);
+  } catch (const LibSerial::OpenFailed & e) {
+    RCLCPP_ERROR(this->get_logger(), "open: %s: %s", dev.c_str(), e.what());
     exit(EXIT_FAILURE);
   }
 
-  if (!this->port_handler_->open()) {
+  try {
+    this->serial_port_.SetBaudRate(h6x_serial_interface::getBaudrate(baudrate));
+  } catch (const std::runtime_error & e) {
+    RCLCPP_ERROR(this->get_logger(), "baudrate: %d: %s", baudrate, e.what());
     exit(EXIT_FAILURE);
   }
 
@@ -38,17 +44,25 @@ SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
     this->create_wall_timer(20ms, std::bind(&SimpleReadUntilNode::onReadTimer, this));
 }
 
-SimpleReadUntilNode::~SimpleReadUntilNode()
-{
-  this->port_handler_->close();
-  this->port_handler_.reset();
-}
+SimpleReadUntilNode::~SimpleReadUntilNode() { this->serial_port_.Close(); }
 
 void SimpleReadUntilNode::onReadTimer()
 {
-  std::stringstream buf;
-  this->port_handler_->readUntil(buf, '\r');
-  RCLCPP_INFO(this->get_logger(), "Read: %s", buf.str().c_str());
+  std::vector<char> buf;
+  char c;
+  buf.reserve(serial_port_.GetNumberOfBytesAvailable());
+  try {
+    while (c != '\r') {
+      this->serial_port_.ReadByte(c, this->timeout_ms_);
+      buf.emplace_back(c);
+    }
+  } catch (const LibSerial::ReadTimeout & e) {
+    RCLCPP_ERROR(this->get_logger(), e.what());
+    return;
+  }
+  buf.emplace_back('\0');
+
+  RCLCPP_INFO(this->get_logger(), "Read: %s", buf.data());
 }
 }  // namespace h6x_serial_interface_example
 

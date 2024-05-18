@@ -14,7 +14,8 @@
 
 #pragma once
 
-#include <h6x_serial_interface/h6x_serial_interface.hpp>
+#include <libserial/SerialPort.h>
+
 #include <rclcpp/rclcpp.hpp>
 
 namespace h6x_serial_interface_example
@@ -22,9 +23,9 @@ namespace h6x_serial_interface_example
 class SimpleReadUntilNode : public rclcpp::Node
 {
 private:
-  using PortHandler = h6x_serial_interface::PortHandler;
+  const int timeout_ms_;
 
-  PortHandler::UniquePtr port_handler_;
+  LibSerial::SerialPort serial_port_;
   rclcpp::TimerBase::SharedPtr read_timer_;
 
 public:
