@@ -7,6 +7,7 @@
 #include "h6x_serial_interface_example/simple_write_node.hpp"
 
 #include <h6x_serial_interface/libserial_helper.hpp>
+#include <string>
 
 namespace h6x_serial_interface_example
 {
