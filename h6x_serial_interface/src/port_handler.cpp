@@ -114,6 +114,7 @@ ssize_t PortHandler::write(char const * const buf, const size_t size)
   }
 
   try {
+    this->port_.FlushInputBuffer();
     this->port_.Write(std::string(buf, size));
   } catch (const std::runtime_error & e) {
     RCLCPP_ERROR(this->getLogger(), e.what());
