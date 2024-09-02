@@ -133,6 +133,40 @@ bool PortHandler::checkPort(void) const noexcept
   return true;
 }
 
+ssize_t PortHandler::flashInputBuffer(void) noexcept
+{ 
+  if (!this->checkPort()) {
+    RCLCPP_ERROR(this->getLogger(), "Port is not open");
+    return (ssize_t)-1;
+  }
+
+  try {
+    this->port_.FlushInputBuffer();
+  } catch (const std::runtime_error & e) {
+    std::cerr << e.what() << std::endl;
+    return (ssize_t)-1;
+  }
+
+  return 0;
+}
+
+ssize_t PortHandler::flashOutputBuffer(void) noexcept
+{
+  if (!this->checkPort()) {
+    RCLCPP_ERROR(this->getLogger(), "Port is not open");
+    return (ssize_t)-1;
+  }
+
+  try {
+    this->port_.FlushOutputBuffer();
+  } catch (const std::runtime_error & e) {
+    std::cerr << e.what() << std::endl;
+    return (ssize_t)-1;
+  }
+
+  return 0;
+}
+
 const rclcpp::Logger PortHandler::getLogger(void) noexcept
 {
   return rclcpp::get_logger("PortHandler");
