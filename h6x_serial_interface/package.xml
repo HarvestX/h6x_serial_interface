@@ -9,7 +9,6 @@
 
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
-  <depend>boost</depend>
   <depend>libserial-dev</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>rclcpp</depend>
