@@ -31,7 +31,7 @@ SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
     std::chrono::milliseconds(spin_ms), std::bind(&SimpleWriteNode::onWritTimer, this));
 }
 
-SimpleWriteNode::~SimpleWriteNode() { this->port_handler_.close(); }
+SimpleWriteNode::~SimpleWriteNode() {this->port_handler_.close();}
 
 void SimpleWriteNode::onWritTimer()
 {

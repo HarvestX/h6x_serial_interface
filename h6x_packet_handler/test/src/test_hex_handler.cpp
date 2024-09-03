@@ -64,7 +64,7 @@ TEST(TestHexHandler, hex2bin_even)
 
 TEST(TestHexHandler, hex2bin_odd)
 {
-  char hex[3] = {/* 'F',*/ 'F', 'F', 'E'};
+  char hex[3] = { /* 'F',*/ 'F', 'F', 'E'};
   uint8_t bin[2];
   ASSERT_EQ(HexHandler::hex2bin(hex, sizeof(hex), bin, sizeof(bin)), size_t(2));
   ASSERT_EQ(bin[0], uint8_t(15));

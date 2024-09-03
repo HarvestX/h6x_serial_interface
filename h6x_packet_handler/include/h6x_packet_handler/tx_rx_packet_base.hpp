@@ -18,7 +18,7 @@
 namespace h6x_packet_handler
 {
 
-template <class TxPacketBase, class RxPacketBase>
+template<class TxPacketBase, class RxPacketBase>
 class TxRxPacketBase : public PacketStateBase
 {
 protected:
@@ -26,9 +26,9 @@ protected:
   RxPacketBase rx_packet;
 
 public:
-  TxRxPacketBase() { this->makeOK(); }
+  TxRxPacketBase() {this->makeOK();}
 
-  bool isWaitingResponse() { return this->isEmpty(); }
+  bool isWaitingResponse() {return this->isEmpty();}
 
   bool getTx(std::string & ret)
   {

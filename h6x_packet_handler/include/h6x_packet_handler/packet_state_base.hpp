@@ -18,13 +18,13 @@ private:
   State state_;
 
 public:
-  PacketStateBase() { this->state_ = State::EMPTY; }
+  PacketStateBase() {this->state_ = State::EMPTY;}
 
-  inline bool isOK() { return this->state_ == State::OK; }
+  inline bool isOK() {return this->state_ == State::OK;}
 
-  inline bool isEmpty() { return this->state_ == State::EMPTY; }
+  inline bool isEmpty() {return this->state_ == State::EMPTY;}
 
-  inline void consume() { this->state_ = State::EMPTY; }
+  inline void consume() {this->state_ = State::EMPTY;}
 
 protected:
   inline void makeOK()

@@ -16,7 +16,8 @@ namespace h6x_packet_handler
 class TxPacketBase : public PacketStateBase
 {
 public:
-  TxPacketBase() : PacketStateBase() {}
+  TxPacketBase()
+  : PacketStateBase() {}
   virtual bool get(std::string &) noexcept = 0;
 };
 }  // namespace h6x_packet_handler

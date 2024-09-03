@@ -10,12 +10,13 @@
 
 namespace h6x_serial_interface
 {
-PortHandler::PortHandler(const std::string & dev) : dev_(dev)
+PortHandler::PortHandler(const std::string & dev)
+: dev_(dev)
 {
   RCLCPP_INFO(this->getLogger(), dev_.c_str());
 }
 
-PortHandler::~PortHandler() { this->close(); }
+PortHandler::~PortHandler() {this->close();}
 
 bool PortHandler::configure(const int baudrate, const int timeout_ms)
 {
@@ -134,7 +135,7 @@ bool PortHandler::checkPort(void) const noexcept
 }
 
 ssize_t PortHandler::flashInputBuffer(void) noexcept
-{ 
+{
   if (!this->checkPort()) {
     RCLCPP_ERROR(this->getLogger(), "Port is not open");
     return (ssize_t)-1;

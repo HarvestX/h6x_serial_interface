@@ -31,7 +31,7 @@ SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
     std::chrono::milliseconds(spin_ms), std::bind(&SimpleReadUntilNode::onReadTimer, this));
 }
 
-SimpleReadUntilNode::~SimpleReadUntilNode() { this->port_handler_.close(); }
+SimpleReadUntilNode::~SimpleReadUntilNode() {this->port_handler_.close();}
 
 void SimpleReadUntilNode::onReadTimer()
 {
