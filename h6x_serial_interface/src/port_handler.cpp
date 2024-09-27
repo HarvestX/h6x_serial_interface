@@ -76,7 +76,6 @@ ssize_t PortHandler::read(char * const buf, const size_t size)
       buf_ptr++;
     }
   } catch (const LibSerial::ReadTimeout & e) {
-    std::cerr << e.what() << std::endl;
     return (ssize_t)-1;
   }
 
@@ -98,7 +97,6 @@ ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter)
       size++;
     }
   } catch (const LibSerial::ReadTimeout & e) {
-    std::cerr << e.what() << std::endl;
     return (ssize_t)-1;
   } catch (const std::runtime_error & e) {
     std::cerr << e.what() << std::endl;
