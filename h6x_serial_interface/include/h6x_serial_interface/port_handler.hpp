@@ -34,8 +34,8 @@ public:
   bool configure(const int = 115200, const int = 10);
   bool open(void);
   bool close(void);
-  ssize_t flashInputBuffer(void) noexcept;
-  ssize_t flashOutputBuffer(void) noexcept;
+  bool flashInputBuffer(void) noexcept;
+  bool flashOutputBuffer(void) noexcept;
 
   ssize_t read(char * const, const size_t) override;
   ssize_t readUntil(std::stringstream &, const char = '\r') override;
