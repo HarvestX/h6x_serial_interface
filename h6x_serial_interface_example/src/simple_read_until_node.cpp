@@ -1,54 +1,44 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #include "h6x_serial_interface_example/simple_read_until_node.hpp"
+
+#include <h6x_serial_interface/libserial_helper.hpp>
 
 namespace h6x_serial_interface_example
 {
 SimpleReadUntilNode::SimpleReadUntilNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("simple_read_until_node", options)
+: rclcpp::Node("simple_read_until_node", options),
+  port_handler_(this->declare_parameter<std::string>("dev", "/dev/ttyUSB0")),
+  delimiter_(this->declare_parameter<char>("delimiter", 'd'))
 {
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
-  const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
+  const int timeout_ms = this->declare_parameter<int>("timeout_ms", 100);
+  const int spin_ms = this->declare_parameter<int>("spin_ms", 1000);
 
-  this->port_handler_ = std::make_unique<PortHandler>(dev);
-
-  using namespace h6x_serial_interface;  // NOLINT
-  if (!this->port_handler_->configure(baudrate)) {
+  if (!this->port_handler_.configure(baudrate, timeout_ms)) {
     exit(EXIT_FAILURE);
   }
 
-  if (!this->port_handler_->open()) {
+  if (!this->port_handler_.open()) {
     exit(EXIT_FAILURE);
   }
 
-  using namespace std::chrono_literals;  // NOLINT
-  this->read_timer_ =
-    this->create_wall_timer(20ms, std::bind(&SimpleReadUntilNode::onReadTimer, this));
+  this->read_timer_ = this->create_wall_timer(
+    std::chrono::milliseconds(spin_ms), std::bind(&SimpleReadUntilNode::onReadTimer, this));
 }
 
-SimpleReadUntilNode::~SimpleReadUntilNode()
-{
-  this->port_handler_->close();
-  this->port_handler_.reset();
-}
+SimpleReadUntilNode::~SimpleReadUntilNode() {this->port_handler_.close();}
 
 void SimpleReadUntilNode::onReadTimer()
 {
-  std::stringstream buf;
-  this->port_handler_->readUntil(buf, '\r');
-  RCLCPP_INFO(this->get_logger(), "Read: %s", buf.str().c_str());
+  std::stringstream ss;
+  this->port_handler_.readUntil(ss, this->delimiter_);
+
+  RCLCPP_INFO(this->get_logger(), "read_until [%c]: %s", this->delimiter_, ss.str().c_str());
 }
 }  // namespace h6x_serial_interface_example
 

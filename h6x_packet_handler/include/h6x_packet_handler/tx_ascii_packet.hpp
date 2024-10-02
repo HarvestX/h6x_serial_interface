@@ -1,18 +1,11 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_TX_ASCII_PACKET_HPP__
+#define ____H6X_PACKET_HANDLER_TX_ASCII_PACKET_HPP__
 
 #include <algorithm>
 #include <array>
@@ -26,7 +19,7 @@
 
 namespace h6x_packet_handler
 {
-template <std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
+template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class TxPacket : public TxPacketBase
 {
 public:
@@ -86,7 +79,7 @@ protected:
     HexHandler::int2hex<uint8_t>(calc_crc, &buf[ASCII_BUF_SIZE - ASCII_ETX_SIZE], 2);
   }
 
-  template <typename T>
+  template<typename T>
   inline void set1ByteData(const size_t && idx, const T & val)
   {
     static_assert(sizeof(T) == 1, "Sizeof T should be 1-byte");
@@ -95,7 +88,7 @@ protected:
     this->bin_data[idx + 0] = (val >> 0) & 0xFF;
   }
 
-  template <typename T>
+  template<typename T>
   inline void set2ByteData(const size_t && idx, const T & val)
   {
     static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
@@ -105,7 +98,7 @@ protected:
     this->bin_data[idx + 1] = (val >> 0) & 0xFF;
   }
 
-  template <typename T>
+  template<typename T>
   inline void set4ByteData(const size_t && idx, const T & val)
   {
     static_assert(sizeof(T) == 4, "Sizeof T should be 4-byte");
@@ -118,3 +111,4 @@ protected:
   }
 };
 }  // namespace h6x_packet_handler
+#endif

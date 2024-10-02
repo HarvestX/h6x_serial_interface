@@ -1,54 +1,42 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #include "h6x_serial_interface_example/simple_write_node.hpp"
+
+#include <h6x_serial_interface/libserial_helper.hpp>
+#include <string>
 
 namespace h6x_serial_interface_example
 {
 SimpleWriteNode::SimpleWriteNode(const rclcpp::NodeOptions & options)
-: rclcpp::Node("simple_write_node", options)
+: rclcpp::Node("simple_write_node", options),
+  port_handler_(this->declare_parameter<std::string>("dev", "/dev/ttyUSB0")),
+  word_(this->declare_parameter<std::string>("word", "Hello World"))
 {
   const int baudrate = this->declare_parameter<int>("baudrate", 115200);
-  const std::string dev = this->declare_parameter<std::string>("dev", "/dev/ttyUSB0");
+  const int spin_ms = this->declare_parameter<int>("spin_ms", 1000);
 
-  this->port_handler_ = std::make_unique<PortHandler>(dev);
-
-  using namespace h6x_serial_interface;  // NOLINT
-  if (!this->port_handler_->configure(baudrate)) {
+  if (!this->port_handler_.configure(baudrate, PortHandler::NO_TIMEOUT)) {
     exit(EXIT_FAILURE);
   }
 
-  if (!this->port_handler_->open()) {
+  if (!this->port_handler_.open()) {
     exit(EXIT_FAILURE);
   }
 
-  using namespace std::chrono_literals;  // NOLINT
-  this->write_timer_ =
-    this->create_wall_timer(500ms, std::bind(&SimpleWriteNode::onWritTimer, this));
+  this->write_timer_ = this->create_wall_timer(
+    std::chrono::milliseconds(spin_ms), std::bind(&SimpleWriteNode::onWritTimer, this));
 }
 
-SimpleWriteNode::~SimpleWriteNode()
-{
-  this->port_handler_->close();
-  this->port_handler_.reset();
-}
+SimpleWriteNode::~SimpleWriteNode() {this->port_handler_.close();}
 
 void SimpleWriteNode::onWritTimer()
 {
-  char buf[] = "Hello World";
-  this->port_handler_->write(buf, strlen(buf));
-  RCLCPP_INFO(this->get_logger(), "Send: %s", buf);
+  this->port_handler_.write(this->word_.data(), this->word_.length());
+  RCLCPP_INFO(this->get_logger(), "Send: %s", this->word_.c_str());
 }
 }  // namespace h6x_serial_interface_example
 

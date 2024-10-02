@@ -17,6 +17,5 @@
   "editor.formatOnSave": true,
   "files.associations": {
     "/usr/include/c++/**": "cpp",
-    "*.ipp": "cpp"
   },
 }

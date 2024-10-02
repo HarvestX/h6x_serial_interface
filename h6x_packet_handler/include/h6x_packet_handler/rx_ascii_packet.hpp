@@ -1,18 +1,11 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_RX_ASCII_PACKET_HPP__
+#define ____H6X_PACKET_HANDLER_RX_ASCII_PACKET_HPP__
 
 #include <array>
 #include <h6x_packet_handler/hex_handler.hpp>
@@ -27,7 +20,7 @@
 namespace h6x_packet_handler
 {
 
-template <std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
+template<std::size_t ASCII_STX_LEN, std::size_t ASCII_DATA_LEN, std::size_t ASCII_ETX_LEN>
 class RxPacket : public PacketStateBase
 {
 public:
@@ -43,19 +36,21 @@ protected:
 
 public:
   RxPacket() = delete;
-  explicit RxPacket(const std::array<char, ASCII_STX_SIZE> & id) : STX_ID(id)
+  explicit RxPacket(const std::array<char, ASCII_STX_SIZE> & id)
+  : STX_ID(id)
   {
     this->bin_data.fill(0);
   }
 
-  virtual bool set(const std::string & buf) noexcept { return this->setBase(buf); }
+  virtual bool set(const std::string & buf) noexcept {return this->setBase(buf);}
 
 protected:
   bool setBase(const std::string & buf) noexcept
   {
     if (
       buf.size() != ASCII_BUF_SIZE || !this->checkPrefix(buf) || !this->checkCRC(buf) ||
-      !this->convert(buf)) {
+      !this->convert(buf))
+    {
       return false;
     }
     this->makeOK();
@@ -104,7 +99,7 @@ protected:
     return calc_crc == crc;
   }
 
-  template <typename T>
+  template<typename T>
   inline T get1byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 1, "Sizeof T should be 1-byte");
@@ -115,7 +110,7 @@ protected:
     return ret;
   }
 
-  template <typename T>
+  template<typename T>
   inline T get2byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 2, "Sizeof T should be 2-byte");
@@ -127,7 +122,7 @@ protected:
     return ret;
   }
 
-  template <typename T>
+  template<typename T>
   inline T get4byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 4, "Sizeof T should be 4-byte");
@@ -142,7 +137,7 @@ protected:
     return ret;
   }
 
-  template <typename T>
+  template<typename T>
   inline T get8byteData(const size_t && idx)
   {
     static_assert(sizeof(T) == 8, "Sizeof T should by 8-byte");
@@ -161,3 +156,4 @@ protected:
   }
 };
 }  // namespace h6x_packet_handler
+#endif

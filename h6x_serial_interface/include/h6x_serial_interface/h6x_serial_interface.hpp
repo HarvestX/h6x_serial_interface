@@ -1,18 +1,12 @@
-// Copyright 2022 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#pragma once
+#ifndef ____H6X_SERIAL_INTERFACE_H6X_SERIAL_INTERFACE_HPP__
+#define ____H6X_SERIAL_INTERFACE_H6X_SERIAL_INTERFACE_HPP__
 
 #include "h6x_serial_interface/port_handler.hpp"
 #include "h6x_serial_interface/port_handler_base.hpp"
+#endif

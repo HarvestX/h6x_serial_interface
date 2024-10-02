@@ -1,3 +1,6 @@
+# Copyright (c) 2024 HarvestX Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 cmake_minimum_required(VERSION 3.8)
 project(h6x_serial_interface)
 
@@ -11,6 +14,7 @@ ament_auto_find_build_dependencies()
 file(GLOB src_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/*.cpp)
 set(TARGET ${PROJECT_NAME})
 ament_auto_add_library(${TARGET} SHARED ${src_files})
+target_link_libraries(${TARGET} serial)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

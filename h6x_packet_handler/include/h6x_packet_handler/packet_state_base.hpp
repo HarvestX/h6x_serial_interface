@@ -1,18 +1,11 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#pragma once
+#ifndef ____H6X_PACKET_HANDLER_PACKET_STATE_BASE_HPP__
+#define ____H6X_PACKET_HANDLER_PACKET_STATE_BASE_HPP__
 
 namespace h6x_packet_handler
 {
@@ -25,13 +18,13 @@ private:
   State state_;
 
 public:
-  PacketStateBase() { this->state_ = State::EMPTY; }
+  PacketStateBase() {this->state_ = State::EMPTY;}
 
-  inline bool isOK() { return this->state_ == State::OK; }
+  inline bool isOK() {return this->state_ == State::OK;}
 
-  inline bool isEmpty() { return this->state_ == State::EMPTY; }
+  inline bool isEmpty() {return this->state_ == State::EMPTY;}
 
-  inline void consume() { this->state_ = State::EMPTY; }
+  inline void consume() {this->state_ = State::EMPTY;}
 
 protected:
   inline void makeOK()
@@ -51,3 +44,4 @@ protected:
   }
 };
 }  // namespace h6x_packet_handler
+#endif

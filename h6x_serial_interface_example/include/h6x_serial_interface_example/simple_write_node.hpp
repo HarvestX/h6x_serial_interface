@@ -1,21 +1,15 @@
-// Copyright 2023 HarvestX Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2024 HarvestX Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#pragma once
+#ifndef ____H6X_SERIAL_INTERFACE_EXAMPLE_SIMPLE_WRITE_NODE_HPP__
+#define ____H6X_SERIAL_INTERFACE_EXAMPLE_SIMPLE_WRITE_NODE_HPP__
 
 #include <h6x_serial_interface/h6x_serial_interface.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <string>
 
 namespace h6x_serial_interface_example
 {
@@ -23,8 +17,9 @@ class SimpleWriteNode : public rclcpp::Node
 {
 private:
   using PortHandler = h6x_serial_interface::PortHandler;
+  PortHandler port_handler_;
+  const std::string word_;
 
-  PortHandler::UniquePtr port_handler_;
   rclcpp::TimerBase::SharedPtr write_timer_;
 
 public:
@@ -36,3 +31,4 @@ private:
   void onWritTimer();
 };
 }  // namespace h6x_serial_interface_example
+#endif

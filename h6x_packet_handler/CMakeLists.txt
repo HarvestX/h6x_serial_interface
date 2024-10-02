@@ -1,3 +1,6 @@
+# Copyright (c) 2024 HarvestX Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 cmake_minimum_required(VERSION 3.8)
 project(h6x_packet_handler)
 
