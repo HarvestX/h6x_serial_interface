@@ -32,6 +32,7 @@ public:
 
 protected:
   std::array<uint8_t, ASCII_DATA_SIZE / 2 + ASCII_DATA_SIZE % 2> bin_data;
+  std::array<uint8_t, ASCII_ETX_SIZE> crc_data;
   const std::array<char, ASCII_STX_SIZE> STX_ID;
 
 public:
@@ -40,6 +41,7 @@ public:
   : STX_ID(id)
   {
     this->bin_data.fill(0);
+    this->crc_data.fill(0);
   }
 
   virtual bool set(const std::string & buf) noexcept {return this->setBase(buf);}
@@ -82,6 +84,9 @@ protected:
   {
     HexHandler::hex2bin(
       &buf[ASCII_STX_SIZE], this->ASCII_DATA_SIZE, this->bin_data.data(), this->bin_data.size());
+    std::copy(
+      buf.begin() + ASCII_BUF_SIZE - ASCII_ETX_SIZE, buf.begin() + ASCII_BUF_SIZE,
+      this->crc_data.begin());
     return true;
   }
 

@@ -31,6 +31,7 @@ private:
 public:
   explicit PortHandler(const std::string &);
   ~PortHandler();
+  bool checkPort(void) const noexcept;
   bool configure(const int = 115200, const int = 10);
   bool open(void);
   bool close(void);
@@ -42,7 +43,6 @@ public:
   ssize_t write(const char * const, const size_t) override;
 
 private:
-  bool checkPort(void) const noexcept;
   static const rclcpp::Logger getLogger(void) noexcept;
 };
 }  // namespace h6x_serial_interface
