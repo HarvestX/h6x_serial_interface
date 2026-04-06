@@ -11,12 +11,27 @@
 namespace h6x_serial_interface
 {
 PortHandler::PortHandler(const std::string & dev)
-: dev_(dev)
+: dev_(dev), port_(std::make_unique<LibSerial::SerialPort>())
 {
   RCLCPP_INFO(this->getLogger(), dev_.c_str());
 }
 
-PortHandler::~PortHandler() {this->close();}
+PortHandler::~PortHandler() noexcept
+{
+  if (!port_) {return;}
+  if (port_->IsOpen()) {
+    try {
+      port_->Close();
+    } catch (...) {
+      // Close() threw (EIO — USB physically removed) before clearing the internal fd.
+      // Calling reset() would invoke ~SerialPort() → Close() again → throw → std::terminate().
+      // release() abandons the object without calling its destructor; the OS reclaims the fd.
+      (void)port_.release();
+      return;
+    }
+  }
+  port_.reset();
+}
 
 bool PortHandler::configure(const int baudrate, const int timeout_ms)
 {
@@ -25,7 +40,7 @@ bool PortHandler::configure(const int baudrate, const int timeout_ms)
   }
 
   try {
-    this->port_.SetBaudRate(getBaudrate(baudrate));
+    this->port_->SetBaudRate(getBaudrate(baudrate));
   } catch (const std::runtime_error & e) {
     RCLCPP_ERROR(this->getLogger(), "baudrate [%d]: %s", baudrate, e.what());
     return false;
@@ -38,8 +53,8 @@ bool PortHandler::configure(const int baudrate, const int timeout_ms)
 bool PortHandler::open()
 {
   try {
-    if (!this->port_.IsOpen()) {
-      this->port_.Open(this->dev_);
+    if (!this->port_->IsOpen()) {
+      this->port_->Open(this->dev_);
     }
   } catch (const LibSerial::OpenFailed & e) {
     RCLCPP_ERROR(this->getLogger(), "open [%s]: %s", this->dev_.c_str(), e.what());
@@ -52,7 +67,7 @@ bool PortHandler::open()
 bool PortHandler::close()
 {
   try {
-    this->port_.Close();
+    this->port_->Close();
   } catch (const LibSerial::AlreadyOpen & e) {
     RCLCPP_WARN(this->getLogger(), "close [%s]: %s", this->dev_.c_str(), e.what());
     return false;
@@ -72,7 +87,7 @@ ssize_t PortHandler::read(char * const buf, const size_t size)
   char * buf_ptr = buf;
   try {
     while (static_cast<std::size_t>(buf_ptr - buf) < size) {
-      this->port_.ReadByte(*buf_ptr, this->timeout_ms_);
+      this->port_->ReadByte(*buf_ptr, this->timeout_ms_);
       buf_ptr++;
     }
   } catch (const LibSerial::ReadTimeout & e) {
@@ -92,7 +107,7 @@ ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter)
   char c;
   try {
     while (c != delimiter) {
-      this->port_.ReadByte(c, this->timeout_ms_);
+      this->port_->ReadByte(c, this->timeout_ms_);
       buf << c;
       size++;
     }
@@ -100,6 +115,7 @@ ssize_t PortHandler::readUntil(std::stringstream & buf, const char delimiter)
     return (ssize_t)-1;
   } catch (const std::runtime_error & e) {
     std::cerr << e.what() << std::endl;
+    io_error_.store(true);
     return (ssize_t)-1;
   }
 
@@ -113,9 +129,10 @@ ssize_t PortHandler::write(char const * const buf, const size_t size)
   }
 
   try {
-    this->port_.Write(std::string(buf, size));
+    this->port_->Write(std::string(buf, size));
   } catch (const std::runtime_error & e) {
     RCLCPP_ERROR(this->getLogger(), e.what());
+    io_error_.store(true);
     return (ssize_t)-1;
   }
 
@@ -124,7 +141,7 @@ ssize_t PortHandler::write(char const * const buf, const size_t size)
 
 bool PortHandler::checkPort(void) const noexcept
 {
-  if (!this->port_.IsOpen()) {
+  if (!this->port_->IsOpen()) {
     RCLCPP_ERROR(this->getLogger(), "port [%s] is not opened", this->dev_.c_str());
     return false;
   }
@@ -140,7 +157,7 @@ bool PortHandler::flashInputBuffer(void) noexcept
   }
 
   try {
-    this->port_.FlushInputBuffer();
+    this->port_->FlushInputBuffer();
   } catch (const std::runtime_error & e) {
     std::cerr << e.what() << std::endl;
     return false;
@@ -157,7 +174,7 @@ bool PortHandler::flashOutputBuffer(void) noexcept
   }
 
   try {
-    this->port_.FlushOutputBuffer();
+    this->port_->FlushOutputBuffer();
   } catch (const std::runtime_error & e) {
     std::cerr << e.what() << std::endl;
     return false;
