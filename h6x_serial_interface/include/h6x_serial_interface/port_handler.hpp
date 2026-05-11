@@ -9,6 +9,7 @@
 
 #include <libserial/SerialPort.h>
 
+#include <atomic>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
@@ -26,11 +27,15 @@ public:
 private:
   const std::string dev_;
   int timeout_ms_ = NO_TIMEOUT;
-  LibSerial::SerialPort port_;
+  std::unique_ptr<LibSerial::SerialPort> port_;
+  std::atomic<bool> io_error_{false};
 
 public:
   explicit PortHandler(const std::string &);
-  ~PortHandler();
+  ~PortHandler() noexcept;
+
+  bool hasIoError() const noexcept {return io_error_.load();}
+  void clearIoError() noexcept {io_error_.store(false);}
   bool checkPort(void) const noexcept;
   bool configure(const int = 115200, const int = 10);
   bool open(void);
